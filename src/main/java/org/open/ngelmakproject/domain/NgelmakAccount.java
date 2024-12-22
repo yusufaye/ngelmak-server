@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
@@ -47,7 +47,7 @@ public class NgelmakAccount implements Serializable {
     private Accessibility visibility;
 
     @Column(name = "created_at")
-    private ZonedDateTime createdAt;
+    private Instant createdAt;
 
     /**
      * a default configuration can be set for visibility of posts and their eventual attachments.
@@ -101,8 +101,6 @@ public class NgelmakAccount implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     @JsonIgnoreProperties(value = { "reviews", "account", "ticket", "replyto" }, allowSetters = true)
     private Set<Review> reviews = new HashSet<>();
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
         return this.id;
@@ -182,16 +180,16 @@ public class NgelmakAccount implements Serializable {
         this.visibility = visibility;
     }
 
-    public ZonedDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return this.createdAt;
     }
 
-    public NgelmakAccount createdAt(ZonedDateTime createdAt) {
+    public NgelmakAccount createdAt(Instant createdAt) {
         this.setCreatedAt(createdAt);
         return this;
     }
 
-    public void setCreatedAt(ZonedDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 

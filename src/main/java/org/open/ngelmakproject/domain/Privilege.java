@@ -8,13 +8,13 @@ import java.util.Objects;
 import org.springframework.data.domain.Persistable;
 
 /**
- * A Authority.
+ * A Privilege.
  */
 @Entity
-@Table(name = "ngelmak_authority")
+@Table(name = "privilege")
 @JsonIgnoreProperties(value = { "new", "id" })
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Authority implements Serializable, Persistable<String> {
+public class Privilege implements Serializable, Persistable<String> {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ public class Authority implements Serializable, Persistable<String> {
         return this.name;
     }
 
-    public Authority name(String name) {
+    public Privilege name(String name) {
         this.setName(name);
         return this;
     }
@@ -57,7 +57,7 @@ public class Authority implements Serializable, Persistable<String> {
         return !this.isPersisted;
     }
 
-    public Authority setIsPersisted() {
+    public Privilege setIsPersisted() {
         this.isPersisted = true;
         return this;
     }
@@ -69,10 +69,10 @@ public class Authority implements Serializable, Persistable<String> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Authority)) {
+        if (!(o instanceof Privilege)) {
             return false;
         }
-        return getName() != null && getName().equals(((Authority) o).getName());
+        return getName() != null && getName().equals(((Privilege) o).getName());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Authority implements Serializable, Persistable<String> {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Authority{" +
+        return "Privilege{" +
             "name=" + getName() +
             "}";
     }

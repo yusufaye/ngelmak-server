@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import org.open.ngelmakproject.domain.enumeration.Opinion;
@@ -32,10 +32,10 @@ public class Comment implements Serializable {
 
     @NotNull
     @Column(name = "at", nullable = false)
-    private ZonedDateTime at;
+    private Instant at;
 
     @Column(name = "last_update")
-    private ZonedDateTime lastUpdate;
+    private Instant lastUpdate;
 
     @Column(name = "content", nullable = false)
     private String content;
@@ -70,8 +70,6 @@ public class Comment implements Serializable {
     )
     private NgelmakAccount account;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Long getId() {
         return this.id;
     }
@@ -98,29 +96,29 @@ public class Comment implements Serializable {
         this.opinion = opinion;
     }
 
-    public ZonedDateTime getAt() {
+    public Instant getAt() {
         return this.at;
     }
 
-    public Comment at(ZonedDateTime at) {
+    public Comment at(Instant at) {
         this.setAt(at);
         return this;
     }
 
-    public void setAt(ZonedDateTime at) {
+    public void setAt(Instant at) {
         this.at = at;
     }
 
-    public ZonedDateTime getLastUpdate() {
+    public Instant getLastUpdate() {
         return this.lastUpdate;
     }
 
-    public Comment lastUpdate(ZonedDateTime lastUpdate) {
+    public Comment lastUpdate(Instant lastUpdate) {
         this.setLastUpdate(lastUpdate);
         return this;
     }
 
-    public void setLastUpdate(ZonedDateTime lastUpdate) {
+    public void setLastUpdate(Instant lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

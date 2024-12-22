@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import org.open.ngelmakproject.domain.enumeration.Status;
@@ -27,7 +27,7 @@ public class Review implements Serializable {
 
     @NotNull
     @Column(name = "at", nullable = false)
-    private ZonedDateTime at;
+    private Instant at;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -61,8 +61,6 @@ public class Review implements Serializable {
     @JsonIgnoreProperties(value = { "reviews", "account", "ticket", "replyto" }, allowSetters = true)
     private Review replyto;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Long getId() {
         return this.id;
     }
@@ -76,16 +74,16 @@ public class Review implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getAt() {
+    public Instant getAt() {
         return this.at;
     }
 
-    public Review at(ZonedDateTime at) {
+    public Review at(Instant at) {
         this.setAt(at);
         return this;
     }
 
-    public void setAt(ZonedDateTime at) {
+    public void setAt(Instant at) {
         this.at = at;
     }
 

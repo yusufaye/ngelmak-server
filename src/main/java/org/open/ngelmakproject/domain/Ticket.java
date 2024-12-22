@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import org.open.ngelmakproject.domain.enumeration.TicketType;
@@ -40,7 +40,7 @@ public class Ticket implements Serializable {
 
     @NotNull
     @Column(name = "at", nullable = false)
-    private ZonedDateTime at;
+    private Instant at;
 
     @Column(name = "closed")
     private Boolean closed;
@@ -77,8 +77,6 @@ public class Ticket implements Serializable {
         allowSetters = true
     )
     private NgelmakAccount issuedby;
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
         return this.id;
@@ -119,16 +117,16 @@ public class Ticket implements Serializable {
         this.type = type;
     }
 
-    public ZonedDateTime getAt() {
+    public Instant getAt() {
         return this.at;
     }
 
-    public Ticket at(ZonedDateTime at) {
+    public Ticket at(Instant at) {
         this.setAt(at);
         return this;
     }
 
-    public void setAt(ZonedDateTime at) {
+    public void setAt(Instant at) {
         this.at = at;
     }
 

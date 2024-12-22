@@ -21,17 +21,56 @@ The following guides illustrate how to use some features concretely:
 * [Accessing Neo4j Data with REST](https://spring.io/guides/gs/accessing-neo4j-data-rest/)
 * [Accessing MongoDB Data with REST](https://spring.io/guides/gs/accessing-mongodb-data-rest/)
 
+
+### Install Java 17
+
+Please consider installing Java jdk 17 if not already installed into your system. Use the command `java --version` to check the version. 
+
+To install jdk-17 execute the command:
+```
+apt install openjdk-17-jdk openjdk-17-jre
+```
+
+Verify that `JAVA_HOME` is set by executing `echo $JAVA_HOME`.
+
+Find the jdk installation path with the following command
+```
+sudo update-alternatives --config java
+```
+
+Set `JAVA_HOME` into your `.bashrc`:
+```
+nano ~/.bashrc
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+source ~/.bashrc
+```
+
+
 ### Maven Parent overrides
 
-Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
-To prevent this, the project POM contains empty overrides for these elements.
-If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
+You can install maven with APT
+```
+sudo apt install maven -y
+```
+
+Check the installation with
+```
+mvn --version
+```
 
 
 # DATABASE (POSGRESQL)
 
 ## Install PostgreSQL Linux (Ubuntu)
+
+For downloading postgreSQL please follow the link [here](https://www.postgresql.org/download/linux/ubuntu/).
+
+Or we can install it simply with apt by executing the following command:
+```
+sudo apt -y install postgresql-14
+```
+
 
 PostgreSLQ server can be configured to listen on some addresses for remote connections. This is done by editing the `postgresql.conf` file.
 
@@ -61,7 +100,7 @@ Connect to PostgreSQL through `postgres` user:
 sudo -u postgres psql
 ```
 
-We have to alter the password for postgres user:
+We have to alter the password for `postgres` user:
 ```
 ALTER USER postgres PASSWORD '<password>';
 ```
@@ -87,10 +126,14 @@ The `psql` is a terminal-based utility to connect to the PostgreSQL server. It i
 First, you can connect as postgress user
 ```
 sudo -i -u postgres
-```
 
-```
-psql -U postgres or simply qsql
+# or
+
+psql -U postgres
+
+# or simply
+
+psql
 ```
 where:
 -`psql`: Invoke the psql program

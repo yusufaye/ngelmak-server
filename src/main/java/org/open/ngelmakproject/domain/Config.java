@@ -3,7 +3,7 @@ package org.open.ngelmakproject.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
 import org.open.ngelmakproject.domain.enumeration.Visibility;
 
@@ -24,7 +24,7 @@ public class Config implements Serializable {
     private Long id;
 
     @Column(name = "last_update")
-    private ZonedDateTime lastUpdate;
+    private Instant lastUpdate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "default_accessibility")
@@ -39,8 +39,6 @@ public class Config implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "configuration")
     private NgelmakAccount ngelmakAccount;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Long getId() {
         return this.id;
     }
@@ -54,16 +52,16 @@ public class Config implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getLastUpdate() {
+    public Instant getLastUpdate() {
         return this.lastUpdate;
     }
 
-    public Config lastUpdate(ZonedDateTime lastUpdate) {
+    public Config lastUpdate(Instant lastUpdate) {
         this.setLastUpdate(lastUpdate);
         return this;
     }
 
-    public void setLastUpdate(ZonedDateTime lastUpdate) {
+    public void setLastUpdate(Instant lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

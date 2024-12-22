@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 import org.open.ngelmakproject.domain.enumeration.AttachmentCategory;
 
@@ -53,14 +53,12 @@ public class Attachment implements Serializable {
     private String type;
 
     @Column(name = "deleted_at")
-    private ZonedDateTime deletedAt;
+    private Instant deletedAt;
 
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(value = { "attachments", "reports", "comments", "account" }, allowSetters = true)
     private Post post;
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
         return this.id;
@@ -179,16 +177,16 @@ public class Attachment implements Serializable {
         this.url = url;
     }
 
-    public ZonedDateTime getDeletedAt() {
+    public Instant getDeletedAt() {
         return this.deletedAt;
     }
 
-    public Attachment deletedAt(ZonedDateTime deletedAt) {
+    public Attachment deletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
         return this;
     }
 
-    public void setDeletedAt(ZonedDateTime deletedAt) {
+    public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }
 

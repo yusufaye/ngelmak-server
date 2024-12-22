@@ -16,5 +16,5 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @Repository
 public interface NgelmakAccountRepository extends JpaRepository<NgelmakAccount, Long> {
-    Optional<NgelmakAccount> findByUser(User user);
+    Optional<NgelmakAccount> findOneByUser(User user);
 }

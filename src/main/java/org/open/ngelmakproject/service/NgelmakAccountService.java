@@ -1,6 +1,6 @@
 package org.open.ngelmakproject.service;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.Optional;
 
 import org.open.ngelmakproject.domain.Config;
@@ -20,7 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service Implementation for managing {@link org.open.ngelmakproject.domain.NgelmakAccount}.
+ * Service Implementation for managing
+ * {@link org.open.ngelmakproject.domain.NgelmakAccount}.
  */
 @Service
 @Transactional
@@ -56,12 +57,12 @@ public class NgelmakAccountService {
         }
 
         NgelmakAccount ngelmakAccount = new NgelmakAccount();
-        ngelmakAccount.setCreatedAt(ZonedDateTime.now());
+        ngelmakAccount.setCreatedAt(Instant.now());
         ngelmakAccount.setName(ngelmakAccountDTO.getName());
         ngelmakAccount.setVisibility(ngelmakAccountDTO.getVisibility());
         ngelmakAccount.setUser(optional.get());
         Config defaultConfig = new Config();
-        defaultConfig.lastUpdate(ZonedDateTime.now());
+        defaultConfig.lastUpdate(Instant.now());
         defaultConfig.defaultAccessibility(Accessibility.DEFAULT);
         defaultConfig.defaultVisibility(Visibility.PRIVATE);
         defaultConfig = configService.save(defaultConfig);
@@ -93,30 +94,30 @@ public class NgelmakAccountService {
         log.debug("Request to partially update NgelmakAccount : {}", ngelmakAccount);
 
         return ngelmakAccountRepository
-            .findById(ngelmakAccount.getId())
-            .map(existingNgelmakAccount -> {
-                if (ngelmakAccount.getName() != null) {
-                    existingNgelmakAccount.setName(ngelmakAccount.getName());
-                }
-                if (ngelmakAccount.getForegroundPicture() != null) {
-                    existingNgelmakAccount.setForegroundPicture(ngelmakAccount.getForegroundPicture());
-                }
-                if (ngelmakAccount.getBackgroundPicture() != null) {
-                    existingNgelmakAccount.setBackgroundPicture(ngelmakAccount.getBackgroundPicture());
-                }
-                if (ngelmakAccount.getVisibility() != null) {
-                    existingNgelmakAccount.setVisibility(ngelmakAccount.getVisibility());
-                }
-                if (ngelmakAccount.getCreatedAt() != null) {
-                    existingNgelmakAccount.setCreatedAt(ngelmakAccount.getCreatedAt());
-                }
-                if (ngelmakAccount.getDescription() != null) {
-                    existingNgelmakAccount.setDescription(ngelmakAccount.getDescription());
-                }
+                .findById(ngelmakAccount.getId())
+                .map(existingNgelmakAccount -> {
+                    if (ngelmakAccount.getName() != null) {
+                        existingNgelmakAccount.setName(ngelmakAccount.getName());
+                    }
+                    if (ngelmakAccount.getForegroundPicture() != null) {
+                        existingNgelmakAccount.setForegroundPicture(ngelmakAccount.getForegroundPicture());
+                    }
+                    if (ngelmakAccount.getBackgroundPicture() != null) {
+                        existingNgelmakAccount.setBackgroundPicture(ngelmakAccount.getBackgroundPicture());
+                    }
+                    if (ngelmakAccount.getVisibility() != null) {
+                        existingNgelmakAccount.setVisibility(ngelmakAccount.getVisibility());
+                    }
+                    if (ngelmakAccount.getCreatedAt() != null) {
+                        existingNgelmakAccount.setCreatedAt(ngelmakAccount.getCreatedAt());
+                    }
+                    if (ngelmakAccount.getDescription() != null) {
+                        existingNgelmakAccount.setDescription(ngelmakAccount.getDescription());
+                    }
 
-                return existingNgelmakAccount;
-            })
-            .map(ngelmakAccountRepository::save);
+                    return existingNgelmakAccount;
+                })
+                .map(ngelmakAccountRepository::save);
     }
 
     /**
@@ -156,7 +157,7 @@ public class NgelmakAccountService {
             throw new BadRequestAlertException("A new should always be attach to a user", ENTITY_NAME, "userNotFound");
         }
         log.debug("Request to get NgelmakAccount for the connected user {}", optional.get());
-        return ngelmakAccountRepository.findByUser(optional.get());
+        return ngelmakAccountRepository.findOneByUser(optional.get());
     }
 
     /**

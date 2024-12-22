@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 /**
  * A Membership.
@@ -23,7 +23,7 @@ public class Membership implements Serializable {
     private Long id;
 
     @Column(name = "at")
-    private ZonedDateTime at;
+    private Instant at;
 
     @Column(name = "activate_notification")
     private Boolean activateNotification;
@@ -44,8 +44,6 @@ public class Membership implements Serializable {
     )
     private NgelmakAccount subscriber;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Long getId() {
         return this.id;
     }
@@ -59,16 +57,16 @@ public class Membership implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getAt() {
+    public Instant getAt() {
         return this.at;
     }
 
-    public Membership at(ZonedDateTime at) {
+    public Membership at(Instant at) {
         this.setAt(at);
         return this;
     }
 
-    public void setAt(ZonedDateTime at) {
+    public void setAt(Instant at) {
         this.at = at;
     }
 

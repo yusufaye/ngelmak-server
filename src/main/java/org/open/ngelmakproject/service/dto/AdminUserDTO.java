@@ -1,13 +1,18 @@
 package org.open.ngelmakproject.service.dto;
 
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.open.ngelmakproject.config.Constants;
 import org.open.ngelmakproject.domain.Authority;
 import org.open.ngelmakproject.domain.User;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -51,6 +56,8 @@ public class AdminUserDTO implements Serializable {
 
     private Set<String> authorities;
 
+    private Set<String> privileges;
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -68,6 +75,7 @@ public class AdminUserDTO implements Serializable {
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        this.privileges = user.getUserPrivileges().stream().map(e -> e.getPrivilege().getName()).collect(Collectors.toSet());
     }
 
     public Long getId() {
@@ -174,6 +182,14 @@ public class AdminUserDTO implements Serializable {
         this.authorities = authorities;
     }
 
+    public Set<String> getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(Set<String> privileges) {
+        this.privileges = privileges;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -188,8 +204,9 @@ public class AdminUserDTO implements Serializable {
             ", createdBy=" + createdBy +
             ", createdDate=" + createdDate +
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
+            ", lastModifiedDate=" + lastModifiedDate + '\'' +
+            ", authorities=" + authorities + '\'' +
+            ", privileges=" + privileges +
             "}";
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.open.ngelmakproject.domain.NgelmakAccount;
+import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.repository.NgelmakAccountRepository;
 import org.open.ngelmakproject.service.NgelmakAccountService;
 import org.open.ngelmakproject.service.dto.NgelmakAccountDTO;
@@ -153,6 +154,15 @@ public class NgelmakAccountResource {
     public ResponseEntity<NgelmakAccount> getNgelmakAccount(@PathVariable("id") Long id) {
         log.debug("REST request to get NgelmakAccount : {}", id);
         Optional<NgelmakAccount> ngelmakAccount = ngelmakAccountService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(ngelmakAccount);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<NgelmakAccount> findByUser(@PathVariable("id") Long id) {
+        log.debug("REST request to get NgelmakAccount by user id : {}", id);
+        User user = new User();
+        user.setId(id);
+        Optional<NgelmakAccount> ngelmakAccount = ngelmakAccountRepository.findOneByUser(user);
         return ResponseUtil.wrapOrNotFound(ngelmakAccount);
     }
 

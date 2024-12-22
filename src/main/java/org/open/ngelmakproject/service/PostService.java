@@ -1,7 +1,7 @@
 package org.open.ngelmakproject.service;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +50,7 @@ public class PostService {
         // some users can create posts that bypass some step validations.
         log.debug("Request to save Post : {}", post);
         post.status(Status.PENDING) // default status is PENDING
-                .at(ZonedDateTime.now()) // set the current time
+                .at(Instant.now()) // set the current time
                 .account(ngelmakAccountService.findOneByCurrentUser().get()); // set the current connected user as
                                                                               // creater of the post.
         return postRepository.save(post);
@@ -88,7 +88,7 @@ public class PostService {
         if (!postRepository.existsById(post.getId())) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        post.status(Status.PENDING).lastUpdate(ZonedDateTime.now());
+        post.status(Status.PENDING).lastUpdate(Instant.now());
         this.partialUpdate(post);
         attachments = attachmentService.save(post, attachments, files);
         // [WARN] make sure to delete attachments only when all other actions are

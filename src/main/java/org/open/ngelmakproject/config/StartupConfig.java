@@ -1,15 +1,22 @@
 package org.open.ngelmakproject.config;
 
+import java.lang.reflect.Field;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.open.ngelmakproject.domain.Authority;
+import org.open.ngelmakproject.domain.Privilege;
 import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.repository.AuthorityRepository;
 import org.open.ngelmakproject.repository.ConfigRepository;
+import org.open.ngelmakproject.repository.PrivilegeRepository;
 import org.open.ngelmakproject.repository.UserRepository;
 import org.open.ngelmakproject.security.AuthoritiesConstants;
+import org.open.ngelmakproject.security.PrivilegesConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,7 +32,20 @@ public class StartupConfig {
     private UserRepository userRepository;
 
     @Autowired
-    private ConfigRepository configRepository;
+    private PrivilegeRepository privilegeRepository;
+
+    
+    @PostConstruct
+    private void initPrivileges() {
+        Set<Privilege> privileges = new HashSet<Privilege>(privilegeRepository.findAll());
+        for (Field field : PrivilegesConstants.class.getFields()) {
+            try {
+                privileges.add(new Privilege().name(field.get(null).toString()));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+            }
+        }
+        privilegeRepository.saveAll(privileges);
+    }
 
     /**
      * Thi method is only for initiating the admin account and nothing else.
@@ -36,20 +56,15 @@ public class StartupConfig {
      */
     @PostConstruct
     private void setUpAdminAccount() {
-        List<Authority> authorities = authorityRepository.findAll();
-        if (authorities.isEmpty()) {
-            Authority authority;
-            authority = new Authority();
-            authority.setName(AuthoritiesConstants.ADMIN);
-            authorities.add(authority);
-            authority = new Authority();
-            authority.setName(AuthoritiesConstants.USER);
-            authorities.add(authority);
-            authority = new Authority();
-            authority.setName(AuthoritiesConstants.ANONYMOUS);
-            authorities.add(authority);
-            authorities = authorityRepository.saveAll(authorities);
+        Set<Authority> authorities = new HashSet<Authority>(authorityRepository.findAll());
+        for (Field field : AuthoritiesConstants.class.getFields()) {
+            try {
+                authorities.add(new Authority().name(field.get(null).toString()));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+            }
         }
+        authorityRepository.saveAll(authorities);
+
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
             User user;

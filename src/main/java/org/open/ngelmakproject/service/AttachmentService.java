@@ -2,7 +2,7 @@ package org.open.ngelmakproject.service;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,7 +165,7 @@ public class AttachmentService {
      */
     public void delete(Post post, List<Attachment> attachments) throws IOException {
         log.debug("Request to delete Attachment : {}", attachments);
-        ZonedDateTime now = ZonedDateTime.now();
+        Instant now = Instant.now();
         if (!post.getStatus().equals(Status.PENDING)) {
             attachments.forEach(e -> e.deletedAt(now)); // mark all attachments as deleted.
             attachmentRepository.saveAll(attachments);
