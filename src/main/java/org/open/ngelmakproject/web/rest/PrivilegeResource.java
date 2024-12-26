@@ -3,17 +3,18 @@ package org.open.ngelmakproject.web.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
 import org.open.ngelmakproject.domain.Privilege;
 import org.open.ngelmakproject.domain.UserPrivilege;
 import org.open.ngelmakproject.repository.PrivilegeRepository;
+import org.open.ngelmakproject.repository.UserPrivilegeRepository;
 import org.open.ngelmakproject.service.PrivilegeService;
 import org.open.ngelmakproject.service.dto.UserPrivilegeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +22,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.validation.Valid;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.ResponseUtil;
+import tech.jhipster.web.util.PaginationUtil;
 
 /**
  * REST controller for managing {@link org.open.ngelmakproject.domain.Privilege}.
@@ -49,6 +52,9 @@ public class PrivilegeResource {
 
     @Autowired
     private PrivilegeService privilegeService;
+
+    @Autowired
+    private UserPrivilegeRepository userPrivilegeRepository;
 
     /**
      * {@code POST  /privileges} : Create a new privilege.
@@ -73,24 +79,52 @@ public class PrivilegeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of privileges in body.
      */
     @GetMapping("")
-    @PreAuthorize("hasAnyPrivilege('ROLE_ADMIN')")
-    public List<Privilege> getAllAuthorities() {
-        log.debug("REST request to get all Authorities");
-        return privilegeRepository.findAll();
+    public ResponseEntity<List<Privilege>> getAllPrivileges() {
+        log.debug("REST request to get a page of Privileges");
+        List<Privilege> privileges = privilegeRepository.findAll();
+        return ResponseEntity.ok().body(privileges);
     }
 
     /**
-     * {@code GET  /privileges/:id} : get the "id" privilege.
+     * {@code GET  /privileges/:login} : get the "login" privilege.
      *
-     * @param id the id of the privilege to retrieve.
+     * @param login the login of the privilege to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the privilege, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{login}")
     @PreAuthorize("hasAnyPrivilege('ROLE_ADMIN')")
-    public ResponseEntity<Privilege> getPrivilege(@PathVariable("id") String id) {
-        log.debug("REST request to get Privilege : {}", id);
-        Optional<Privilege> privilege = privilegeRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(privilege);
+    public ResponseEntity<List<UserPrivilege>> getPrivilege(@PathVariable("login") String login) {
+        log.debug("REST request to get Privilege : {}", login);
+        List<UserPrivilege> userPrivileges = userPrivilegeRepository.findByGrantedToLogin(login);
+        return ResponseEntity.ok().body(userPrivileges);
+    }
+
+    /**
+     * {@code REVOKE  /privileges/revoke/:id} : revoke the "id" privilege.
+     *
+     * @param id the id of the privilege to revoke.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/revoke/{id}")
+    @PreAuthorize("hasAnyPrivilege('ROLE_ADMIN')")
+    public ResponseEntity<Void> revokePrivilege(@PathVariable("id") Long id) {
+        log.debug("REST request to revoke Privilege : {}", id);
+        privilegeService.revoke(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * {@code ASSIGN  /privileges/assign/:id} : revoke the "id" privilege.
+     *
+     * @param id the id of the privilege to revoke.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @PutMapping("/assign/{id}")
+    @PreAuthorize("hasAnyPrivilege('ROLE_ADMIN')")
+    public ResponseEntity<Void> assignPrivilege(@PathVariable("id") Long id) {
+        log.debug("REST request to assign Privilege : {}", id);
+        privilegeService.assign(id);
+        return ResponseEntity.noContent().build();
     }
 
     /**

@@ -32,6 +32,7 @@ public class UserPrivilege implements Serializable {
     private Long id;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "grant_status", nullable = false)
     private GrantStatus grantStatus;
 
@@ -46,7 +47,8 @@ public class UserPrivilege implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    @ManyToOne(optional = true)
+    @NotNull
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties(value = { "ngelmakAccountPrivileges" }, allowSetters = true)
     private Privilege privilege;
 
@@ -54,8 +56,8 @@ public class UserPrivilege implements Serializable {
     @JsonIgnoreProperties(value = { "authorities" }, allowSetters = true)
     private User lastUpdatedBy;
 
-    @ManyToOne(optional = false)
     @NotNull
+    @ManyToOne(optional = false, cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties(value = { "authorities" }, allowSetters = true)
     private User grantedTo;
 }

@@ -2,7 +2,6 @@ package org.open.ngelmakproject.config;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +11,6 @@ import org.open.ngelmakproject.domain.Authority;
 import org.open.ngelmakproject.domain.Privilege;
 import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.repository.AuthorityRepository;
-import org.open.ngelmakproject.repository.ConfigRepository;
 import org.open.ngelmakproject.repository.PrivilegeRepository;
 import org.open.ngelmakproject.repository.UserRepository;
 import org.open.ngelmakproject.security.AuthoritiesConstants;
@@ -34,7 +32,6 @@ public class StartupConfig {
     @Autowired
     private PrivilegeRepository privilegeRepository;
 
-    
     @PostConstruct
     private void initPrivileges() {
         Set<Privilege> privileges = new HashSet<Privilege>(privilegeRepository.findAll());
@@ -77,6 +74,7 @@ public class StartupConfig {
             user.setEmail("admin@localhost");
             user.setActivated(true);
             user.setLastModifiedDate(Instant.now());
+            user.setCertificationDate(Instant.now());
             users.add(user);
             user.setAuthorities(
                     authorities.stream().filter(e -> e.getName().equals(AuthoritiesConstants.ADMIN))
@@ -90,6 +88,7 @@ public class StartupConfig {
             user.setEmail("user@localhost");
             user.setActivated(true);
             user.setLastModifiedDate(Instant.now());
+            user.setCertificationDate(Instant.now());
             users.add(user);
 
             user.setAuthorities(

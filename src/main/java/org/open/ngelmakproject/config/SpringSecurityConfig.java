@@ -68,7 +68,7 @@ public class SpringSecurityConfig {
                     auth.requestMatchers(mvc.pattern(HttpMethod.POST, "/api/authenticate")).permitAll();
                     auth.requestMatchers(mvc.pattern(HttpMethod.GET, "/api/authenticate")).permitAll();
                     auth.requestMatchers(mvc.pattern("/api/register")).permitAll();
-                    auth.requestMatchers(mvc.pattern("/api/activate")).permitAll();
+                    auth.requestMatchers(mvc.pattern("/api/account/activate")).permitAll();
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll();
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/finish")).permitAll();
                     // auth.requestMatchers(mvc.pattern("/api/admin/**")).hasAuthority(AuthoritiesConstants.ADMIN);

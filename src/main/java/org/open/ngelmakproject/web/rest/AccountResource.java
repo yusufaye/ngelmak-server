@@ -1,13 +1,17 @@
 package org.open.ngelmakproject.web.rest;
 
 import jakarta.validation.Valid;
+import tech.jhipster.web.util.ResponseUtil;
+
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.repository.UserRepository;
+import org.open.ngelmakproject.security.AuthoritiesConstants;
 import org.open.ngelmakproject.security.SecurityUtils;
 import org.open.ngelmakproject.service.MailService;
 import org.open.ngelmakproject.service.UserService;
+import org.open.ngelmakproject.service.dto.AccountCertificationRequestDTO;
 import org.open.ngelmakproject.service.dto.AdminUserDTO;
 import org.open.ngelmakproject.service.dto.PasswordChangeDTO;
 import org.open.ngelmakproject.web.rest.errors.*;
@@ -16,6 +20,8 @@ import org.open.ngelmakproject.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -26,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 public class AccountResource {
 
     private static class AccountResourceException extends RuntimeException {
-
         private AccountResourceException(String message) {
             super(message);
         }
@@ -65,15 +70,16 @@ public class AccountResource {
     }
 
     /**
-     * {@code GET  /activate} : activate the registered user.
+     * {@code GET  /account/activate} : activate the registered user.
      *
      * @param key the activation key.
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
      */
-    @GetMapping("/activate")
+    @GetMapping("/account/activate")
     public void activateAccount(@RequestParam(value = "key") String key) {
         Optional<User> user = userService.activateRegistration(key);
         if (!user.isPresent()) {
+            System.out.println("======= "+key);
             throw new AccountResourceException("No user was found for this activation key");
         }
     }
@@ -90,6 +96,21 @@ public class AccountResource {
             .getUserWithAuthorities()
             .map(AdminUserDTO::new)
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+    }
+
+    /**
+     * {@code GET /admin/users/account-request-certification} : requestion
+     * certification for a user account.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         all users.
+     */
+    @PutMapping("/account/account-request-certification")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public ResponseEntity<AdminUserDTO> requestCertification(
+            @Valid @RequestBody AccountCertificationRequestDTO requestDTO) {
+        log.debug("REST request to certify the connected User account");
+        return ResponseUtil.wrapOrNotFound(userService.requestCertification(requestDTO));
     }
 
     /**

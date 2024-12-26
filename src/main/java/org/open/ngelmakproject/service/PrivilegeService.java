@@ -57,6 +57,7 @@ public class PrivilegeService {
             throw new BadRequestAlertException("privilege already exists", ENTITY_NAME, "idexists");
         }
         UserPrivilege userPrivilege = new UserPrivilege();
+        userPrivilege.setPrivilege(userPrivilegeDTO.getPrivilege());
         userPrivilege.setLastUpdatedBy(optional.get());
         userPrivilege.setLastUpdatedDate(Instant.now());
         userPrivilege.setDate(Instant.now());
@@ -66,4 +67,33 @@ public class PrivilegeService {
         return userPrivilegeRepository.save(userPrivilege);
     }
 
+    public void revoke(Long id) {
+        Optional<User> optional = userService.getUserWithAuthorities();
+        if (optional.isEmpty()) {
+            throw new BadRequestAlertException("Invalid privilege assigner", ENTITY_NAME, "privilegeAssignerNotFound");
+        }
+        userPrivilegeRepository.findById(id)
+        .map(existingPost -> {
+            existingPost.setGrantStatus(GrantStatus.REVOKED);
+            existingPost.setLastUpdatedBy(optional.get());
+            existingPost.setLastUpdatedDate(Instant.now());
+            return existingPost;
+        })
+        .map(userPrivilegeRepository::save);
+    }
+
+    public void assign(Long id) {
+        Optional<User> optional = userService.getUserWithAuthorities();
+        if (optional.isEmpty()) {
+            throw new BadRequestAlertException("Invalid privilege assigner", ENTITY_NAME, "privilegeAssignerNotFound");
+        }
+        userPrivilegeRepository.findById(id)
+        .map(existingPost -> {
+            existingPost.setGrantStatus(GrantStatus.GRANTED);
+            existingPost.setLastUpdatedBy(optional.get());
+            existingPost.setLastUpdatedDate(Instant.now());
+            return existingPost;
+        })
+        .map(userPrivilegeRepository::save);
+    }
 }

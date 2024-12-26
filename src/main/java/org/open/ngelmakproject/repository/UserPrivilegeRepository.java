@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface UserPrivilegeRepository extends JpaRepository<UserPrivilege, String> {
+public interface UserPrivilegeRepository extends JpaRepository<UserPrivilege, Long> {
   boolean existsByPrivilegeAndGrantedTo(Privilege privilege,
       User user);
 
@@ -22,4 +22,7 @@ public interface UserPrivilegeRepository extends JpaRepository<UserPrivilege, St
       User user);
 
   List<UserPrivilege> findByGrantedTo(User user);
+
+  @Query("select u from UserPrivilege u where u.grantedTo.login = ?1")
+  List<UserPrivilege> findByGrantedToLogin(String login);
 }

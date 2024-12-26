@@ -9,12 +9,17 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
 import org.open.ngelmakproject.config.Constants;
+import org.open.ngelmakproject.domain.enumeration.CertificationStatus;
+import org.open.ngelmakproject.domain.enumeration.OfficialDocType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -73,6 +78,23 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Column(nullable = false)
     private boolean activated = false;
 
+    @Column(name = "create_at")
+    private Instant createAt = null;
+
+    @Column(name = "certification_date")
+    private Instant certificationDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "certification_status")
+    private CertificationStatus certificationStatus = null;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "official_doc_type")
+    private OfficialDocType officialDocType;
+
+    @Column(name = "official_doc_identification", unique = true)
+    private String officialDocIdentification;
+
     @Size(min = 2, max = 10)
     @Column(name = "lang_key", length = 10)
     private String langKey;
@@ -95,7 +117,7 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     private Instant resetDate = null;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "ngelmak_user_authority", joinColumns = {
             @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
                     @JoinColumn(name = "authority_name", referencedColumnName = "name") })
@@ -156,6 +178,30 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.email = email;
     }
 
+    public CertificationStatus getCertificationStatus() {
+        return certificationStatus;
+    }
+
+    public void setCertificationStatus(CertificationStatus certificationStatus) {
+        this.certificationStatus = certificationStatus;
+    }
+
+    public OfficialDocType getOfficialDocType() {
+        return officialDocType;
+    }
+
+    public void setOfficialDocType(OfficialDocType officialDocType) {
+        this.officialDocType = officialDocType;
+    }
+
+    public String getOfficialDocIdentification() {
+        return officialDocIdentification;
+    }
+
+    public void setOfficialDocIdentification(String officialDocIdentification) {
+        this.officialDocIdentification = officialDocIdentification;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -164,12 +210,12 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isActivated() {
-        return activated;
+    public Instant isCertificationDate() {
+        return certificationDate;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setCertificationDate(Instant certificationDate) {
+        this.certificationDate = certificationDate;
     }
 
     public String getActivationKey() {
@@ -202,6 +248,14 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
 
     public void setLangKey(String langKey) {
         this.langKey = langKey;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
     public Set<Authority> getAuthorities() {

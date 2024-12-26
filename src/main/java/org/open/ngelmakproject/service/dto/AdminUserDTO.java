@@ -8,15 +8,22 @@ import java.util.stream.Collectors;
 import org.open.ngelmakproject.config.Constants;
 import org.open.ngelmakproject.domain.Authority;
 import org.open.ngelmakproject.domain.User;
+import org.open.ngelmakproject.domain.enumeration.CertificationStatus;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * A DTO representing a user, with his authorities.
  */
+@Getter
+@Setter
+@NoArgsConstructor
 public class AdminUserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,15 +59,13 @@ public class AdminUserDTO implements Serializable {
 
     private String lastModifiedBy;
 
+    private CertificationStatus certificationStatus;
+
     private Instant lastModifiedDate;
 
     private Set<String> authorities;
 
     private Set<String> privileges;
-
-    public AdminUserDTO() {
-        // Empty constructor needed for Jackson.
-    }
 
     public AdminUserDTO(User user) {
         this.id = user.getId();
@@ -73,140 +78,10 @@ public class AdminUserDTO implements Serializable {
         this.langKey = user.getLangKey();
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
+        this.certificationStatus = user.getCertificationStatus();
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
         this.privileges = user.getUserPrivileges().stream().map(e -> e.getPrivilege().getName()).collect(Collectors.toSet());
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
-    public String getLangKey() {
-        return langKey;
-    }
-
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public Set<String> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<String> authorities) {
-        this.authorities = authorities;
-    }
-
-    public Set<String> getPrivileges() {
-        return privileges;
-    }
-
-    public void setPrivileges(Set<String> privileges) {
-        this.privileges = privileges;
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "AdminUserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate + '\'' +
-            ", authorities=" + authorities + '\'' +
-            ", privileges=" + privileges +
-            "}";
-    }
 }
