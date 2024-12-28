@@ -10,7 +10,7 @@ import java.time.Instant;
  * A Membership.
  */
 @Entity
-@Table(name = "membership")
+@Table(name = "nk_membership")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Membership implements Serializable {
 

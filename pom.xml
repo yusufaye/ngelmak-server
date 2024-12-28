@@ -73,24 +73,23 @@
 			<version>1.8.0</version>
 		</dependency>
 
-		
+
 		<!-- Spring Boot Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<!-- bearer token authentication -->
-        <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-        </dependency>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
 		<!-- Spring Boot Security -->
-		
 
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -98,6 +97,18 @@
 			<version>3.2.1</version>
 		</dependency>
 
+		<!-- CSV File Handler -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<!-- Liquibase with Spring Boot -->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>3.9.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>io.micrometer</groupId>
@@ -167,6 +178,24 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.30.0</version>
+				<configuration>
+					<changeLogFile>config/liquibase/master.xml</changeLogFile>
+					<diffChangeLogFile>
+						config/liquibase/${maven.build.timestamp}_diffchangelog.xml</diffChangeLogFile>
+					<outputChangeLogFile>
+						config/liquibase/${maven.build.timestamp}_outputchangelog.xml</outputChangeLogFile>
+					<driver>org.postgresql.Driver</driver>
+					<url>jdbc:postgresql://localhost:5432/ngelmakdb</url>
+					<username>ngelmak</username>
+					<password>ngelmak</password>
+					<verbose>true</verbose>
+					<logging>debug</logging>
 				</configuration>
 			</plugin>
 		</plugins>

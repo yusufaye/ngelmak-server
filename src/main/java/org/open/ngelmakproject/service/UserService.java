@@ -270,8 +270,8 @@ public class UserService {
         return this.getUserWithAuthorities().map(
                 user -> {
                     user.setCertificationStatus(CertificationStatus.REQUESTED);
-                    user.setOfficialDocType(requestDTO.getOfficialDocType());
-                    user.setOfficialDocIdentification(requestDTO.getOfficialDocIdentification());
+                    user.setDocType(requestDTO.getDocType());
+                    user.setDocId(requestDTO.getDocId());
                     userRepository.save(user);
                     log.debug("Changed Information for User: {}", user);
                     return user;
@@ -287,13 +287,13 @@ public class UserService {
      */
     public Optional<AdminUserDTO> certificate(AccountCertificationRequestDTO requestDTO) {
         CertificationStatus[] status = {CertificationStatus.REJECTED, CertificationStatus.REQUESTED};
-        return this.userRepository.findOneByOfficialDocIdentificationAndCertificationStatusIn(requestDTO.getOfficialDocIdentification(), status).map(
+        return this.userRepository.findOneByDocIdAndCertificationStatusIn(requestDTO.getDocId(), status).map(
                 user -> {
-                    user.setOfficialDocIdentification(
-                            passwordEncoder.encode(requestDTO.getOfficialDocIdentification()));
+                    user.setDocId(
+                            passwordEncoder.encode(requestDTO.getDocId()));
                     user.setCertificationStatus(CertificationStatus.CERTIFIED);
-                    user.setOfficialDocType(requestDTO.getOfficialDocType());
-                    user.setCertificationDate(Instant.now());
+                    user.setDocType(requestDTO.getDocType());
+                    user.setCertifiedDate(Instant.now());
                     userRepository.save(user);
                     log.debug("Changed Information for User: {}", user);
                     return user;
@@ -310,9 +310,9 @@ public class UserService {
     public Optional<AdminUserDTO> certificationWithdrawal(String login) {
         return this.userRepository.findOneByLoginAndCertificationStatus(login, CertificationStatus.CERTIFIED).map(
                 user -> {
-                    user.setOfficialDocIdentification("");
+                    user.setDocId("");
                     user.setCertificationStatus(CertificationStatus.REJECTED);
-                    user.setCertificationDate(null);
+                    user.setCertifiedDate(null);
                     userRepository.save(user);
                     log.debug("Changed Information for User: {}", user);
                     return user;

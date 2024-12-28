@@ -12,6 +12,4 @@ public final class Constants {
     public static final String DEFAULT_LANGUAGE = "fr";
     public static final String DEFAULT_ATTACHMENT_LOCAL_DIRECTORY = "attachment-repos";
 
-
-    private Constants() {}
 }

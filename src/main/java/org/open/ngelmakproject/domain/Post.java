@@ -18,7 +18,7 @@ import org.open.ngelmakproject.domain.enumeration.Visibility;
  * @author A true hipster
  */
 @Entity
-@Table(name = "post")
+@Table(name = "nk_post")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Post implements Serializable {
 

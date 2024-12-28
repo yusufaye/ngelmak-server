@@ -1,26 +1,32 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.time.Instant;
 
 import org.open.ngelmakproject.domain.enumeration.GrantStatus;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 /**
  * A UserPrivilege.
  */
 @Entity
-@Table(name = "user_privilege")
-@SuppressWarnings("common-java:DuplicatedBlocks")
-@NoArgsConstructor
-@Getter
-@Setter
+@Table(name = "nk_user_privilege")
+@Data
 public class UserPrivilege implements Serializable {
 
     private static final long serialVersionUID = 1L;

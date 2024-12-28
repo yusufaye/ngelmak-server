@@ -23,9 +23,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneByResetKey(String resetKey);
     Optional<User> findOneByEmailIgnoreCase(String email);
     Optional<User> findOneByLogin(String login);
-    Optional<User> findOneByOfficialDocIdentification(String officialDocIdentification);
-    Optional<User> findOneByOfficialDocIdentificationAndCertificationStatusIn(String officialDocIdentification, CertificationStatus[] status);
-    Optional<User> findOneByLoginAndCertificationStatus(String officialDocIdentification, CertificationStatus status);
+    Optional<User> findOneByDocId(String docId);
+    Optional<User> findOneByDocIdAndCertificationStatusIn(String docId, CertificationStatus[] status);
+    Optional<User> findOneByLoginAndCertificationStatus(String docId, CertificationStatus status);
 
     @EntityGraph(attributePaths = "authorities")
     Optional<User> findOneWithAuthoritiesByLogin(String login);

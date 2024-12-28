@@ -11,7 +11,7 @@ import org.open.ngelmakproject.domain.enumeration.Visibility;
  * A Config.
  */
 @Entity
-@Table(name = "config")
+@Table(name = "nk_config")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Config implements Serializable {
 

@@ -11,7 +11,7 @@ import org.springframework.data.domain.Persistable;
  * A Authority.
  */
 @Entity
-@Table(name = "ngelmak_authority")
+@Table(name = "nk_authority")
 @JsonIgnoreProperties(value = { "new", "id" })
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Authority implements Serializable, Persistable<String> {

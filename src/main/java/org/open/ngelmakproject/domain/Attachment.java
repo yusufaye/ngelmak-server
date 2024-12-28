@@ -12,7 +12,7 @@ import org.open.ngelmakproject.domain.enumeration.AttachmentCategory;
  * A Attachment.
  */
 @Entity
-@Table(name = "attachment")
+@Table(name = "nk_attachment")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Attachment implements Serializable {
 

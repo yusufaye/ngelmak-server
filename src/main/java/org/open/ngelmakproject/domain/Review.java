@@ -13,7 +13,7 @@ import org.open.ngelmakproject.domain.enumeration.Status;
  * A Review.
  */
 @Entity
-@Table(name = "review")
+@Table(name = "nk_review")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Review implements Serializable {
 

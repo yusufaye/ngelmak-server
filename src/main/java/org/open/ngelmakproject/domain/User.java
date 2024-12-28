@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
 import org.open.ngelmakproject.config.Constants;
 import org.open.ngelmakproject.domain.enumeration.CertificationStatus;
-import org.open.ngelmakproject.domain.enumeration.OfficialDocType;
+import org.open.ngelmakproject.domain.enumeration.DocType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -39,7 +39,7 @@ import jakarta.validation.constraints.Size;
  * A user.
  */
 @Entity
-@Table(name = "ngelmak_user")
+@Table(name = "nk_user")
 public class User extends AbstractAuditingEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -78,23 +78,6 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Column(nullable = false)
     private boolean activated = false;
 
-    @Column(name = "create_at")
-    private Instant createAt = null;
-
-    @Column(name = "certification_date")
-    private Instant certificationDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "certification_status")
-    private CertificationStatus certificationStatus = null;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "official_doc_type")
-    private OfficialDocType officialDocType;
-
-    @Column(name = "official_doc_identification", unique = true)
-    private String officialDocIdentification;
-
     @Size(min = 2, max = 10)
     @Column(name = "lang_key", length = 10)
     private String langKey;
@@ -116,9 +99,26 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+    @Column(name = "created_date")
+    private Instant createdDate = null;
+
+    @Column(name = "certified_date")
+    private Instant certifiedDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "certification_status")
+    private CertificationStatus certificationStatus = null;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "doc_type")
+    private DocType docType;
+
+    @Column(name = "doc_id", unique = true)
+    private String docId;
+
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable(name = "ngelmak_user_authority", joinColumns = {
+    @JoinTable(name = "nk_user_authority", joinColumns = {
             @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
                     @JoinColumn(name = "authority_name", referencedColumnName = "name") })
     @BatchSize(size = 20)
@@ -186,20 +186,20 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.certificationStatus = certificationStatus;
     }
 
-    public OfficialDocType getOfficialDocType() {
-        return officialDocType;
+    public DocType getDocType() {
+        return docType;
     }
 
-    public void setOfficialDocType(OfficialDocType officialDocType) {
-        this.officialDocType = officialDocType;
+    public void setDocType(DocType docType) {
+        this.docType = docType;
     }
 
-    public String getOfficialDocIdentification() {
-        return officialDocIdentification;
+    public String getDocId() {
+        return docId;
     }
 
-    public void setOfficialDocIdentification(String officialDocIdentification) {
-        this.officialDocIdentification = officialDocIdentification;
+    public void setDocId(String docId) {
+        this.docId = docId;
     }
 
     public String getImageUrl() {
@@ -210,12 +210,12 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public Instant isCertificationDate() {
-        return certificationDate;
+    public Instant getCertifiedDate() {
+        return certifiedDate;
     }
 
-    public void setCertificationDate(Instant certificationDate) {
-        this.certificationDate = certificationDate;
+    public void setCertifiedDate(Instant certifiedDate) {
+        this.certifiedDate = certifiedDate;
     }
 
     public String getActivationKey() {

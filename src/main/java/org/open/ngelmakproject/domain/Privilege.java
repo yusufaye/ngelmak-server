@@ -11,7 +11,7 @@ import org.springframework.data.domain.Persistable;
  * A Privilege.
  */
 @Entity
-@Table(name = "privilege")
+@Table(name = "nk_privilege")
 @JsonIgnoreProperties(value = { "new", "id" })
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Privilege implements Serializable, Persistable<String> {

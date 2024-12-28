@@ -13,7 +13,7 @@ import org.open.ngelmakproject.domain.enumeration.TicketType;
  * A Ticket.
  */
 @Entity
-@Table(name = "ticket")
+@Table(name = "nk_ticket")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Ticket implements Serializable {
 

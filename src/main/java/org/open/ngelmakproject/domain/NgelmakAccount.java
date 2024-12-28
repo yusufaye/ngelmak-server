@@ -14,7 +14,7 @@ import org.open.ngelmakproject.domain.enumeration.Accessibility;
  * @author A true hipster
  */
 @Entity
-@Table(name = "ngelmak_account")
+@Table(name = "nk_account")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class NgelmakAccount implements Serializable {
 

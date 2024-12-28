@@ -13,7 +13,7 @@ import org.open.ngelmakproject.domain.enumeration.Opinion;
  * A Comment.
  */
 @Entity
-@Table(name = "comment")
+@Table(name = "nk_comment")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Comment implements Serializable {
 
