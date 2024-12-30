@@ -1,7 +1,6 @@
 package org.open.ngelmakproject.service.dto;
 
 import java.io.Serializable;
-import java.io.ObjectInputFilter.Config;
 import java.time.ZonedDateTime;
 
 import org.open.ngelmakproject.domain.enumeration.Accessibility;

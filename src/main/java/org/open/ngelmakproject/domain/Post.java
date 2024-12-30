@@ -55,7 +55,7 @@ public class Post implements Serializable {
     @Column(name = "visibility")
     private Visibility visibility;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", length = 1000, nullable = false)
     private String content;
 
     @NotNull

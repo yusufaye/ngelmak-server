@@ -15,6 +15,7 @@ import org.open.ngelmakproject.service.MailService;
 import org.open.ngelmakproject.service.UserService;
 import org.open.ngelmakproject.service.dto.AccountCertificationRequestDTO;
 import org.open.ngelmakproject.service.dto.AdminUserDTO;
+import org.open.ngelmakproject.service.dto.PageDTO;
 import org.open.ngelmakproject.web.rest.errors.BadRequestAlertException;
 import org.open.ngelmakproject.web.rest.errors.EmailAlreadyUsedException;
 import org.open.ngelmakproject.web.rest.errors.LoginAlreadyUsedException;
@@ -22,11 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,12 +35,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -160,18 +156,14 @@ public class UserResource {
      *         all users.
      */
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public ResponseEntity<List<AdminUserDTO>> getAllUsers(@ParameterObject Pageable pageable) {
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<PageDTO<AdminUserDTO>> getAllUsers(@ParameterObject Pageable pageable) {
         log.debug("REST request to get all User for an admin");
-        System.out.println(pageable);
         if (!onlyContainsAllowedProperties(pageable)) {
             return ResponseEntity.badRequest().build();
         }
 
-        final Page<AdminUserDTO> page = userService.getAllManagedUsers(pageable);
-        HttpHeaders headers = PaginationUtil
-                .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok(new PageDTO<>(userService.getAllManagedUsers(pageable)));
     }
 
     private boolean onlyContainsAllowedProperties(Pageable pageable) {

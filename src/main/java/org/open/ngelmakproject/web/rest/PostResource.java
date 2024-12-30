@@ -1,7 +1,5 @@
 package org.open.ngelmakproject.web.rest;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,6 +11,7 @@ import org.open.ngelmakproject.domain.Attachment;
 import org.open.ngelmakproject.domain.Post;
 import org.open.ngelmakproject.repository.PostRepository;
 import org.open.ngelmakproject.service.PostService;
+import org.open.ngelmakproject.service.dto.PageDTO;
 import org.open.ngelmakproject.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +19,21 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import jakarta.validation.constraints.NotNull;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -149,12 +156,10 @@ public class PostResource {
      *         of posts in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Post>> getAllPosts(@ParameterObject Pageable pageable) {
+    public ResponseEntity<PageDTO<Post>> getAllPosts(@ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Posts");
         Page<Post> page = postService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil
-                .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        return ResponseEntity.ok().body(new PageDTO<>(page));
     }
 
     /**

@@ -46,8 +46,7 @@ public class UserPrivilege implements Serializable {
     @Column(name = "date", nullable = false)
     private Instant date;
 
-    @NotNull
-    @Column(name = "last_updated_date", nullable = false)
+    @Column(name = "last_updated_date")
     private Instant lastUpdatedDate;
 
     @Column(name = "comment")
