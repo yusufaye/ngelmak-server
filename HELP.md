@@ -89,6 +89,7 @@ echo "host all all 0.0.0.0/0 md5" | sudo tee -a /etc/postgresql/14/main/pg_hba.c
 ```
 
 Resart PostgreSQL
+
 ```
 sudo systemctl restart postgresql
 ```
@@ -96,22 +97,26 @@ sudo systemctl restart postgresql
 ### Connect to the PostgreSQL database server
 
 Connect to PostgreSQL through `postgres` user:
+
 ```
 sudo -u postgres psql
 ```
 
 We have to alter the password for `postgres` user:
+
 ```
 ALTER USER postgres PASSWORD '<password>';
 ```
 
 Create a new user:
+
 ```
 postgres=# CREATE USER <username> WITH PASSWORD '<password>';
 CREATE ROLE
 ```
 
 We can also create a database for our created user:
+
 ```
 postgres=# CREATE DATABASE <databas_name> OWNER <username>;
 CREATE DATABASE

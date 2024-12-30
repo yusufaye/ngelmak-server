@@ -25,9 +25,8 @@ public class Comment implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "opinion", nullable = false)
+    @Column(name = "opinion")
     private Opinion opinion;
 
     @NotNull
@@ -37,7 +36,7 @@ public class Comment implements Serializable {
     @Column(name = "last_update")
     private Instant lastUpdate;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     /**

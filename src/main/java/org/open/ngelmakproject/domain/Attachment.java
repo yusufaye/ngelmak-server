@@ -45,7 +45,7 @@ public class Attachment implements Serializable {
     @Column(name = "url")
     private String url;
 
-    @Column(name = "content")
+    @Column(name = "content", length = 2000)
     private String content;
 
     @NotNull

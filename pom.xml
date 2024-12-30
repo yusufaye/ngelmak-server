@@ -103,12 +103,6 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.8</version>
 		</dependency>
-		<!-- Liquibase with Spring Boot -->
-		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-			<version>3.9.0</version>
-		</dependency>
 
 		<dependency>
 			<groupId>io.micrometer</groupId>
@@ -189,7 +183,7 @@
 					<diffChangeLogFile>
 						config/liquibase/${maven.build.timestamp}_diffchangelog.xml</diffChangeLogFile>
 					<outputChangeLogFile>
-						config/liquibase/${maven.build.timestamp}_outputchangelog.xml</outputChangeLogFile>
+						src/main/resources/config/liquibase/outputchangelog.xml</outputChangeLogFile>
 					<driver>org.postgresql.Driver</driver>
 					<url>jdbc:postgresql://localhost:5432/ngelmakdb</url>
 					<username>ngelmak</username>
@@ -197,6 +191,14 @@
 					<verbose>true</verbose>
 					<logging>debug</logging>
 				</configuration>
+				<dependencies>
+					<!-- Liquibase with Spring Boot -->
+					<dependency>
+						<groupId>org.liquibase</groupId>
+						<artifactId>liquibase-core</artifactId>
+						<version>3.9.0</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
