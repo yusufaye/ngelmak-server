@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileStorageService {
 
-  /**
-   * Folder location for storing files
-   */
-  private static String root = "resources/upload-dir";
+  @Value("${nk.file.upload-directory.location}")
+  private String fileStorageLocation;
 
-  public final static Path buildPath(String... dirs) {
-    return Paths.get(root, dirs);
+  public Path buildPath(String... dirs) throws IOException {
+    return Paths.get(fileStorageLocation.toString(), dirs);
   }
 
   public void init(Path path) {
@@ -53,8 +52,7 @@ public class FileStorageService {
       if (file.isEmpty()) {
         throw new StorageException("Failed to store empty file.");
       }
-      Path destinationFile = FileStorageService.buildPath(dirs).resolve(filename).normalize()
-          .toAbsolutePath();
+      Path destinationFile = buildPath(dirs).resolve(filename).normalize();
       if (!Files.exists(destinationFile.getParent())) {
         this.init(destinationFile.getParent());
       }
@@ -67,12 +65,12 @@ public class FileStorageService {
     }
   }
 
-  public Path load(String filename, String... dirs) {
-    return FileStorageService.buildPath(dirs).resolve(filename);
+  public Path load(String filename, String... dirs) throws IOException {
+    return buildPath(dirs).resolve(filename);
   }
 
-  public Stream<Path> loadAll(String... dirs) {
-    final Path location = FileStorageService.buildPath(dirs);
+  public Stream<Path> loadAll(String... dirs) throws IOException {
+    final Path location = buildPath(dirs);
     try {
       return Files.walk(location, 1)
           .filter(path -> !path.equals(location))
@@ -82,7 +80,7 @@ public class FileStorageService {
     }
   }
 
-  public Resource loadAsResource(String filename, String... dirs) {
+  public Resource loadAsResource(String filename, String... dirs) throws IOException {
     try {
       Path file = load(filename, dirs);
       Resource resource = new UrlResource(file.toUri());
@@ -100,7 +98,7 @@ public class FileStorageService {
     FileSystemUtils.deleteRecursively(load(filename, dirs));
   }
 
-  public void deleteDirectory(String... dirs) {
-    FileSystemUtils.deleteRecursively(FileStorageService.buildPath(dirs).toFile());
+  public void deleteDirectory(String... dirs) throws IOException {
+    FileSystemUtils.deleteRecursively(buildPath(dirs).toFile());
   }
 }

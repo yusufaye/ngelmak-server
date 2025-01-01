@@ -39,6 +39,9 @@ import com.nimbusds.jose.util.Base64;
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
+    @Value("${nk.file.upload-directory.location}")
+    private String fileStorageLocation;
+
     @Value("${jhipster.security.authentication.jwt.base64-secret}")
     private String jwtKey;
 
@@ -71,6 +74,10 @@ public class SpringSecurityConfig {
                     auth.requestMatchers(mvc.pattern("/api/account/activate")).permitAll();
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll();
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/finish")).permitAll();
+                    // Allow public access to static resources
+                    auth.requestMatchers(mvc.pattern("/ngelmak-directory/files/public/**")).permitAll();
+                    auth.requestMatchers(mvc.pattern("/ngelmak-directory/**")).authenticated();
+
                     // auth.requestMatchers(mvc.pattern("/api/admin/**")).hasAuthority(AuthoritiesConstants.ADMIN);
                     auth.requestMatchers(mvc.pattern("/api/**")).authenticated();
                     // auth.requestMatchers(mvc.pattern("/v3/api-docs/**")).hasAuthority(AuthoritiesConstants.ADMIN);

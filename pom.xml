@@ -58,6 +58,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<!-- Spring MVC to serve static resources. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>tech.jhipster</groupId>
@@ -191,14 +196,14 @@
 					<verbose>true</verbose>
 					<logging>debug</logging>
 				</configuration>
-				<dependencies>
-					<!-- Liquibase with Spring Boot -->
-					<dependency>
-						<groupId>org.liquibase</groupId>
-						<artifactId>liquibase-core</artifactId>
-						<version>3.9.0</version>
-					</dependency>
-				</dependencies>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>update</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

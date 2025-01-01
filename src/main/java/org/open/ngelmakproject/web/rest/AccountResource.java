@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * REST controller for managing the current user's account.
@@ -79,7 +80,6 @@ public class AccountResource {
     public void activateAccount(@RequestParam(value = "key") String key) {
         Optional<User> user = userService.activateRegistration(key);
         if (!user.isPresent()) {
-            System.out.println("======= "+key);
             throw new AccountResourceException("No user was found for this activation key");
         }
     }
@@ -136,8 +136,7 @@ public class AccountResource {
             userDTO.getFirstName(),
             userDTO.getLastName(),
             userDTO.getEmail(),
-            userDTO.getLangKey(),
-            userDTO.getImageUrl()
+            userDTO.getLangKey()
         );
     }
 
@@ -189,6 +188,20 @@ public class AccountResource {
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this reset key");
         }
+    }
+
+    /**
+     * {@code PUT   /account/upload-image} : Upload an image for the current user.
+     * 
+     * @param file
+     * @return the current user.
+     */
+    @PutMapping("/account/upload-image")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public ResponseEntity<AdminUserDTO> requestCertification(@RequestParam("file") MultipartFile file) {
+        log.debug("REST request to upload the user's account image");
+        userService.upload(file);
+        return ResponseUtil.wrapOrNotFound(userService.upload(file));
     }
 
     private static boolean isPasswordLengthInvalid(String password) {

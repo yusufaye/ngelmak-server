@@ -1,5 +1,6 @@
 package org.open.ngelmakproject.service;
 
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -18,14 +19,17 @@ import org.open.ngelmakproject.security.AuthoritiesConstants;
 import org.open.ngelmakproject.security.SecurityUtils;
 import org.open.ngelmakproject.service.dto.AccountCertificationRequestDTO;
 import org.open.ngelmakproject.service.dto.AdminUserDTO;
+import org.open.ngelmakproject.service.storage.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import tech.jhipster.security.RandomUtil;
 
@@ -43,6 +47,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     public UserService(
             UserRepository userRepository,
@@ -227,9 +234,8 @@ public class UserService {
      * @param lastName  last name of user.
      * @param email     email id of user.
      * @param langKey   language key.
-     * @param imageUrl  image URL of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
+    public void updateUser(String firstName, String lastName, String email, String langKey) {
         SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findOneByLogin)
                 .ifPresent(user -> {
@@ -239,7 +245,6 @@ public class UserService {
                         user.setEmail(email.toLowerCase());
                     }
                     user.setLangKey(langKey);
-                    user.setImageUrl(imageUrl);
                     userRepository.save(user);
                     log.debug("Changed Information for User: {}", user);
                 });
@@ -286,7 +291,7 @@ public class UserService {
      * @return updated user.
      */
     public Optional<AdminUserDTO> certificate(AccountCertificationRequestDTO requestDTO) {
-        CertificationStatus[] status = {CertificationStatus.REJECTED, CertificationStatus.REQUESTED};
+        CertificationStatus[] status = { CertificationStatus.REJECTED, CertificationStatus.REQUESTED };
         return this.userRepository.findOneByDocIdAndCertificationStatusIn(requestDTO.getDocId(), status).map(
                 user -> {
                     user.setDocId(
@@ -364,5 +369,29 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).toList();
+    }
+
+    /**
+     * Save or update user image.
+     *
+     * @param attachment the entity to save.
+     * @return the persisted entity.
+     */
+    public Optional<AdminUserDTO> upload(MultipartFile file) {
+        log.debug("Request to update user image");
+        return this.getUserWithAuthorities().map(
+            user -> {
+                /**
+                 * By default, user profile images are downloaded to the public directory, allowing access without authentication.
+                 * Then we get for instance /public/images/ngelmak/ngelmak-log.jpg
+                 */
+                String[] dirs = { "public", "images", user.getLogin() };
+                Path path = fileStorageService.store(file, file.getOriginalFilename(), dirs);
+                    user.setImageUrl(path.toString());
+                    userRepository.save(user);
+                    log.debug("Changed Information for User: {}", user);
+                    return user;
+                })
+                .map(AdminUserDTO::new);
     }
 }
