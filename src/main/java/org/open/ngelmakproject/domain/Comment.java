@@ -1,20 +1,36 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.open.ngelmakproject.domain.enumeration.Opinion;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A Comment.
  */
 @Entity
 @Table(name = "nk_comment")
-@SuppressWarnings("common-java:DuplicatedBlocks")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,38 +52,66 @@ public class Comment implements Serializable {
     @Column(name = "last_update")
     private Instant lastUpdate;
 
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    @Column(name = "url", nullable = true)
+    private String url;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIncludeProperties(value = { "id" })
+    private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIncludeProperties(value = { "id" })
+    private Comment replayto;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @NotNull
+    @JsonIncludeProperties(value = { "id" })
+    private NkAccount account;
 
     /**
      * a ticket can be related to a abusive comment.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "commentRelated")
-    @JsonIgnoreProperties(value = { "reviews", "postRelated", "commentRelated", "accountRelated", "issuedby" }, allowSetters = true)
+    @JsonIgnore
     private Set<Ticket> reports = new HashSet<>();
 
     /**
      * a comment can have multiple subcomments (reply), each issued by one user.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "replayto")
-    @JsonIgnoreProperties(value = { "reports", "comments", "post", "replayto", "account" }, allowSetters = true)
+    @JsonIgnore
     private Set<Comment> comments = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "attachments", "reports", "comments", "account" }, allowSetters = true)
-    private Post post;
+    public Comment() {
+    }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "reports", "comments", "post", "replayto", "account" }, allowSetters = true)
-    private Comment replayto;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties(
-        value = { "configuration", "user", "reports", "owners", "comments", "memberships", "subscriptions", "posts", "reviews" },
-        allowSetters = true
-    )
-    private NgelmakAccount account;
+    public Comment(Long id,
+            Opinion opinion,
+            Instant at,
+            Instant lastUpdate,
+            Instant deletedAt,
+            String content,
+            String url,
+            Post post,
+            Comment replayto,
+            NkAccount account) {
+        this.id = id;
+        this.opinion = opinion;
+        this.at = at;
+        this.lastUpdate = lastUpdate;
+        this.deletedAt = deletedAt;
+        this.content = content;
+        this.url = url;
+        this.post = post;
+        this.replayto = replayto;
+        this.account = account;
+    }
 
     public Long getId() {
         return this.id;
@@ -121,6 +165,19 @@ public class Comment implements Serializable {
         this.lastUpdate = lastUpdate;
     }
 
+    public Instant getDeleteAt() {
+        return this.deletedAt;
+    }
+
+    public Comment deletedAt(Instant deletedAt) {
+        this.setDeleteAt(deletedAt);
+        return this;
+    }
+
+    public void setDeleteAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
     public String getContent() {
         return this.content;
     }
@@ -132,6 +189,23 @@ public class Comment implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean hasUrl() {
+        return (url != null) && !url.isEmpty();
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public Comment url(String url) {
+        this.setUrl(url);
+        return this;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Set<Ticket> getReports() {
@@ -222,20 +296,18 @@ public class Comment implements Serializable {
         return this;
     }
 
-    public NgelmakAccount getAccount() {
+    public NkAccount getAccount() {
         return this.account;
     }
 
-    public void setAccount(NgelmakAccount ngelmakAccount) {
+    public void setAccount(NkAccount ngelmakAccount) {
         this.account = ngelmakAccount;
     }
 
-    public Comment account(NgelmakAccount ngelmakAccount) {
+    public Comment account(NkAccount ngelmakAccount) {
         this.setAccount(ngelmakAccount);
         return this;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -250,7 +322,6 @@ public class Comment implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -258,11 +329,12 @@ public class Comment implements Serializable {
     @Override
     public String toString() {
         return "Comment{" +
-            "id=" + getId() +
-            ", opinion='" + getOpinion() + "'" +
-            ", at='" + getAt() + "'" +
-            ", lastUpdate='" + getLastUpdate() + "'" +
-            ", content='" + getContent() + "'" +
-            "}";
+                "id=" + getId() +
+                ", opinion='" + getOpinion() + "'" +
+                ", at='" + getAt() + "'" +
+                ", lastUpdate='" + getLastUpdate() + "'" +
+                ", content='" + getContent() + "'" +
+                ", url='" + getUrl() + "'" +
+                "}";
     }
 }
