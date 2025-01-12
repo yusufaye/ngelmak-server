@@ -1,8 +1,5 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -13,9 +10,25 @@ import org.open.ngelmakproject.domain.enumeration.Status;
 import org.open.ngelmakproject.domain.enumeration.Subject;
 import org.open.ngelmakproject.domain.enumeration.Visibility;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+
 /**
  * The Post entity.
- * @author A true hipster
  */
 @Entity
 @Table(name = "nk_post")
@@ -63,31 +76,32 @@ public class Post implements Serializable {
     @Column(name = "status", nullable = false)
     private Status status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIncludeProperties(value = { "id", "content" })
+    private Post postReference;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @NotNull
+    @JsonIncludeProperties(value = { "id" })
+    private NkAccount account;
+
     /**
      * a post can be commented multiple times.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    @JsonIgnoreProperties(value = { "post" }, allowSetters = true)
+    @OneToMany(mappedBy = "post")
+    @JsonIgnore
     private Set<Attachment> attachments = new HashSet<>();
 
     /**
      * a post can be signal as going against our policies.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "postRelated")
-    @JsonIgnoreProperties(value = { "reviews", "postRelated", "commentRelated", "accountRelated", "issuedby" }, allowSetters = true)
+    @OneToMany(mappedBy = "postRelated")
+    @JsonIgnore
     private Set<Ticket> reports = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    @JsonIgnoreProperties(value = { "reports", "comments", "post", "replayto", "account" }, allowSetters = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+    @JsonIncludeProperties(value = { "id" })
     private Set<Comment> comments = new HashSet<>();
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties(
-        value = { "configuration", "user", "reports", "owners", "comments", "memberships", "subscriptions", "posts", "reviews" },
-        allowSetters = true
-    )
-    private NgelmakAccount account;
 
     public Long getId() {
         return this.id;
@@ -312,20 +326,34 @@ public class Post implements Serializable {
         return this;
     }
 
-    public NgelmakAccount getAccount() {
+    public Post getPostReference() {
+        return this.postReference;
+    }
+
+    public void setPostReference(Post postReference) {
+        this.postReference = postReference;
+    }
+
+    public Post postReference(Post postReference) {
+        this.setPostReference(postReference);
+        return this;
+    }
+
+    public NkAccount getAccount() {
         return this.account;
     }
 
-    public void setAccount(NgelmakAccount ngelmakAccount) {
+    public void setAccount(NkAccount ngelmakAccount) {
         this.account = ngelmakAccount;
     }
 
-    public Post account(NgelmakAccount ngelmakAccount) {
+    public Post account(NkAccount ngelmakAccount) {
         this.setAccount(ngelmakAccount);
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and
+    // setters here
 
     @Override
     public boolean equals(Object o) {
@@ -340,20 +368,25 @@ public class Post implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        // see
+        // https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
     /**
-     * Path where to save the attachment file will be in the default root, in the default directory for attachments, the account id, and finaly in the folder named by the post id, i.e., resources/upload-dir/attachment-repos/<ngelmak-id>/<post-id>/ngelmak-image.png.
+     * Path where to save the attachment file will be in the default root, in the
+     * default directory for attachments, the account id, and finaly in the folder
+     * named by the post id, i.e.,
+     * resources/upload-dir/attachment-repos/<ngelmak-id>/<post-id>/ngelmak-image.png.
      * e.g., resources/upload-dir/attachment-repos/256/17623/ngelmak-image.png
+     * 
      * @return the hierarchy directories on which the attachment will be saved.
      */
-    public String[] getDirectories() {
-        String[] dirs = new String[]{
-            Constants.DEFAULT_ATTACHMENT_LOCAL_DIRECTORY, // default directory
-            this.getAccount().getId().toString(), // <ngelmak-account-id> as subdir 
-            this.getId().toString(), // <post-id> as subdir
+    public String[] path() {
+        String[] dirs = new String[] {
+                Constants.DEFAULT_ATTACHMENT_LOCAL_DIRECTORY, // default directory
+                this.getAccount().getId().toString(), // <ngelmak-account-id> as subdir
+                this.getId().toString(), // <post-id> as subdir
         };
         return dirs;
     }
@@ -362,16 +395,16 @@ public class Post implements Serializable {
     @Override
     public String toString() {
         return "Post{" +
-            "id=" + getId() +
-            ", title='" + getTitle() + "'" +
-            ", subtitle='" + getSubtitle() + "'" +
-            ", keywords='" + getKeywords() + "'" +
-            ", subject='" + getSubject() + "'" +
-            ", at='" + getAt() + "'" +
-            ", lastUpdate='" + getLastUpdate() + "'" +
-            ", visibility='" + getVisibility() + "'" +
-            ", content='" + getContent() + "'" +
-            ", status='" + getStatus() + "'" +
-            "}";
+                "id=" + getId() +
+                ", title='" + getTitle() + "'" +
+                ", subtitle='" + getSubtitle() + "'" +
+                ", keywords='" + getKeywords() + "'" +
+                ", subject='" + getSubject() + "'" +
+                ", at='" + getAt() + "'" +
+                ", lastUpdate='" + getLastUpdate() + "'" +
+                ", visibility='" + getVisibility() + "'" +
+                ", content='" + getContent() + "'" +
+                ", status='" + getStatus() + "'" +
+                "}";
     }
 }

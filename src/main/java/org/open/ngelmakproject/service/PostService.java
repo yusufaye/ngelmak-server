@@ -37,7 +37,7 @@ public class PostService {
     @Autowired
     private AttachmentService attachmentService;
     @Autowired
-    private NgelmakAccountService ngelmakAccountService;
+    private NkAccountService ngelmakAccountService;
 
     /**
      * Save a post.

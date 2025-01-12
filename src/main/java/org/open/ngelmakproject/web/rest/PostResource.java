@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.open.ngelmakproject.domain.Attachment;
 import org.open.ngelmakproject.domain.Post;
@@ -19,6 +20,7 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -159,7 +161,7 @@ public class PostResource {
     public ResponseEntity<PageDTO<Post>> getAllPosts(@ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Posts");
         Page<Post> page = postService.findAll(pageable);
-        return ResponseEntity.ok().body(new PageDTO<>(page));
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(new PageDTO<>(page));
     }
 
     /**
