@@ -8,17 +8,4 @@ public enum Opinion {
     OPPOSED,
     SUPPORT,
     NEUTRAL,
-    STRENGTHENED("REINFORCED");
-
-    private String value;
-
-    Opinion() {}
-
-    Opinion(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
 }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.open.ngelmakproject.config.Constants;
 import org.open.ngelmakproject.domain.User;
@@ -25,6 +26,7 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -163,7 +165,7 @@ public class UserResource {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(new PageDTO<>(userService.getAllManagedUsers(pageable)));
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(new PageDTO<>(userService.getAllManagedUsers(pageable)));
     }
 
     private boolean onlyContainsAllowedProperties(Pageable pageable) {

@@ -1,11 +1,23 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
 import org.open.ngelmakproject.domain.enumeration.Visibility;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 
 /**
  * A Config.
@@ -34,10 +46,9 @@ public class Config implements Serializable {
     @Column(name = "default_visibility")
     private Visibility defaultVisibility;
 
-    @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
-            "subscriptions", "posts", "reviews" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "configuration")
-    private NgelmakAccount ngelmakAccount;
+    @JsonIgnore
+    @OneToOne(mappedBy = "configuration")
+    private NkAccount nkAccount;
 
     public Long getId() {
         return this.id;
@@ -91,22 +102,22 @@ public class Config implements Serializable {
         this.defaultVisibility = defaultVisibility;
     }
 
-    public NgelmakAccount getNgelmakAccount() {
-        return this.ngelmakAccount;
+    public NkAccount getNkAccount() {
+        return this.nkAccount;
     }
 
-    public void setNgelmakAccount(NgelmakAccount ngelmakAccount) {
-        if (this.ngelmakAccount != null) {
-            this.ngelmakAccount.setConfiguration(null);
+    public void setNkAccount(NkAccount nkAccount) {
+        if (this.nkAccount != null) {
+            this.nkAccount.setConfiguration(null);
         }
-        if (ngelmakAccount != null) {
-            ngelmakAccount.setConfiguration(this);
+        if (nkAccount != null) {
+            nkAccount.setConfiguration(this);
         }
-        this.ngelmakAccount = ngelmakAccount;
+        this.nkAccount = nkAccount;
     }
 
-    public Config ngelmakAccount(NgelmakAccount ngelmakAccount) {
-        this.setNgelmakAccount(ngelmakAccount);
+    public Config nkAccount(NkAccount nkAccount) {
+        this.setNkAccount(nkAccount);
         return this;
     }
 

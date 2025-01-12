@@ -1,12 +1,23 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 
 import org.open.ngelmakproject.domain.enumeration.AttachmentCategory;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A Attachment.
@@ -203,8 +214,6 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -218,7 +227,6 @@ public class Attachment implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -226,10 +234,10 @@ public class Attachment implements Serializable {
     @Override
     public String toString() {
         return "Attachment{" +
-            "id=" + getId() +
-            ", type='" + getType() + "'" +
-            ", content='" + getContent() + "'" +
-            ", type='" + getType() + "'" +
-            "}";
+                "id=" + getId() +
+                ", type='" + getType() + "'" +
+                ", content='" + getContent() + "'" +
+                ", type='" + getType() + "'" +
+                "}";
     }
 }

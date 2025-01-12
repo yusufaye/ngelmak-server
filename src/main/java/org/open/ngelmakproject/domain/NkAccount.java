@@ -1,22 +1,38 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * The Compte entity.
- * @author A true hipster
  */
 @Entity
 @Table(name = "nk_account")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class NgelmakAccount implements Serializable {
+public class NkAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,63 +66,64 @@ public class NgelmakAccount implements Serializable {
     private Instant createdAt;
 
     /**
-     * a default configuration can be set for visibility of posts and their eventual attachments.
+     * a default configuration can be set for visibility of posts and their eventual
+     * attachments.
      */
-    @JsonIgnoreProperties(value = { "ngelmakAccount" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @NotNull
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(unique = true)
     private Config configuration;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(unique = true)
+    @JsonIgnore
     private User user;
 
     /**
      * a ticket could be also related to a an account.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountRelated")
-    @JsonIgnoreProperties(value = { "reviews", "postRelated", "commentRelated", "accountRelated", "issuedby" }, allowSetters = true)
+    @JsonIgnore
     private Set<Ticket> reports = new HashSet<>();
 
     /**
      * must be is issued by a user account.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "issuedby")
-    @JsonIgnoreProperties(value = { "reviews", "postRelated", "commentRelated", "accountRelated", "issuedby" }, allowSetters = true)
+    @JsonIgnore
     private Set<Ticket> owners = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
-    @JsonIgnoreProperties(value = { "reports", "comments", "post", "replayto", "account" }, allowSetters = true)
+    @JsonIgnore
     private Set<Comment> comments = new HashSet<>();
 
     /**
-     * any user can subscribe to any other user's account which my eventually have any subscriber
+     * any user can subscribe to any other user's account which my eventually have
+     * any subscriber
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
-    @JsonIgnoreProperties(value = { "account", "subscriber" }, allowSetters = true)
+    @JsonIgnore
     private Set<Membership> memberships = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriber")
-    @JsonIgnoreProperties(value = { "account", "subscriber" }, allowSetters = true)
+    @JsonIgnore
     private Set<Membership> subscriptions = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
-    @JsonIgnoreProperties(value = { "attachments", "reports", "comments", "account" }, allowSetters = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    @JsonIgnore
     private Set<Post> posts = new HashSet<>();
 
     /**
      * a review is done by a user
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
-    @JsonIgnoreProperties(value = { "reviews", "account", "ticket", "replyto" }, allowSetters = true)
+    @JsonIgnore
     private Set<Review> reviews = new HashSet<>();
 
     public Long getId() {
         return this.id;
     }
 
-    public NgelmakAccount id(Long id) {
+    public NkAccount id(Long id) {
         this.setId(id);
         return this;
     }
@@ -119,7 +136,7 @@ public class NgelmakAccount implements Serializable {
         return this.name;
     }
 
-    public NgelmakAccount name(String name) {
+    public NkAccount name(String name) {
         this.setName(name);
         return this;
     }
@@ -132,7 +149,7 @@ public class NgelmakAccount implements Serializable {
         return this.description;
     }
 
-    public NgelmakAccount description(String description) {
+    public NkAccount description(String description) {
         this.setDescription(description);
         return this;
     }
@@ -145,7 +162,7 @@ public class NgelmakAccount implements Serializable {
         return this.foregroundPicture;
     }
 
-    public NgelmakAccount foregroundPicture(String foregroundPicture) {
+    public NkAccount foregroundPicture(String foregroundPicture) {
         this.setForegroundPicture(foregroundPicture);
         return this;
     }
@@ -158,7 +175,7 @@ public class NgelmakAccount implements Serializable {
         return this.backgroundPicture;
     }
 
-    public NgelmakAccount backgroundPicture(String backgroundPicture) {
+    public NkAccount backgroundPicture(String backgroundPicture) {
         this.setBackgroundPicture(backgroundPicture);
         return this;
     }
@@ -171,7 +188,7 @@ public class NgelmakAccount implements Serializable {
         return this.visibility;
     }
 
-    public NgelmakAccount visibility(Accessibility visibility) {
+    public NkAccount visibility(Accessibility visibility) {
         this.setVisibility(visibility);
         return this;
     }
@@ -184,7 +201,7 @@ public class NgelmakAccount implements Serializable {
         return this.createdAt;
     }
 
-    public NgelmakAccount createdAt(Instant createdAt) {
+    public NkAccount createdAt(Instant createdAt) {
         this.setCreatedAt(createdAt);
         return this;
     }
@@ -201,7 +218,7 @@ public class NgelmakAccount implements Serializable {
         this.configuration = config;
     }
 
-    public NgelmakAccount configuration(Config config) {
+    public NkAccount configuration(Config config) {
         this.setConfiguration(config);
         return this;
     }
@@ -214,7 +231,7 @@ public class NgelmakAccount implements Serializable {
         this.user = user;
     }
 
-    public NgelmakAccount user(User user) {
+    public NkAccount user(User user) {
         this.setUser(user);
         return this;
     }
@@ -233,18 +250,18 @@ public class NgelmakAccount implements Serializable {
         this.reports = tickets;
     }
 
-    public NgelmakAccount reports(Set<Ticket> tickets) {
+    public NkAccount reports(Set<Ticket> tickets) {
         this.setReports(tickets);
         return this;
     }
 
-    public NgelmakAccount addReports(Ticket ticket) {
+    public NkAccount addReports(Ticket ticket) {
         this.reports.add(ticket);
         ticket.setAccountRelated(this);
         return this;
     }
 
-    public NgelmakAccount removeReports(Ticket ticket) {
+    public NkAccount removeReports(Ticket ticket) {
         this.reports.remove(ticket);
         ticket.setAccountRelated(null);
         return this;
@@ -264,18 +281,18 @@ public class NgelmakAccount implements Serializable {
         this.owners = tickets;
     }
 
-    public NgelmakAccount owners(Set<Ticket> tickets) {
+    public NkAccount owners(Set<Ticket> tickets) {
         this.setOwners(tickets);
         return this;
     }
 
-    public NgelmakAccount addOwners(Ticket ticket) {
+    public NkAccount addOwners(Ticket ticket) {
         this.owners.add(ticket);
         ticket.setIssuedby(this);
         return this;
     }
 
-    public NgelmakAccount removeOwners(Ticket ticket) {
+    public NkAccount removeOwners(Ticket ticket) {
         this.owners.remove(ticket);
         ticket.setIssuedby(null);
         return this;
@@ -295,18 +312,18 @@ public class NgelmakAccount implements Serializable {
         this.comments = comments;
     }
 
-    public NgelmakAccount comments(Set<Comment> comments) {
+    public NkAccount comments(Set<Comment> comments) {
         this.setComments(comments);
         return this;
     }
 
-    public NgelmakAccount addComment(Comment comment) {
+    public NkAccount addComment(Comment comment) {
         this.comments.add(comment);
         comment.setAccount(this);
         return this;
     }
 
-    public NgelmakAccount removeComment(Comment comment) {
+    public NkAccount removeComment(Comment comment) {
         this.comments.remove(comment);
         comment.setAccount(null);
         return this;
@@ -326,18 +343,18 @@ public class NgelmakAccount implements Serializable {
         this.memberships = memberships;
     }
 
-    public NgelmakAccount memberships(Set<Membership> memberships) {
+    public NkAccount memberships(Set<Membership> memberships) {
         this.setMemberships(memberships);
         return this;
     }
 
-    public NgelmakAccount addMemberships(Membership membership) {
+    public NkAccount addMemberships(Membership membership) {
         this.memberships.add(membership);
         membership.setAccount(this);
         return this;
     }
 
-    public NgelmakAccount removeMemberships(Membership membership) {
+    public NkAccount removeMemberships(Membership membership) {
         this.memberships.remove(membership);
         membership.setAccount(null);
         return this;
@@ -357,18 +374,18 @@ public class NgelmakAccount implements Serializable {
         this.subscriptions = memberships;
     }
 
-    public NgelmakAccount subscriptions(Set<Membership> memberships) {
+    public NkAccount subscriptions(Set<Membership> memberships) {
         this.setSubscriptions(memberships);
         return this;
     }
 
-    public NgelmakAccount addSubscriptions(Membership membership) {
+    public NkAccount addSubscriptions(Membership membership) {
         this.subscriptions.add(membership);
         membership.setSubscriber(this);
         return this;
     }
 
-    public NgelmakAccount removeSubscriptions(Membership membership) {
+    public NkAccount removeSubscriptions(Membership membership) {
         this.subscriptions.remove(membership);
         membership.setSubscriber(null);
         return this;
@@ -388,18 +405,18 @@ public class NgelmakAccount implements Serializable {
         this.posts = posts;
     }
 
-    public NgelmakAccount posts(Set<Post> posts) {
+    public NkAccount posts(Set<Post> posts) {
         this.setPosts(posts);
         return this;
     }
 
-    public NgelmakAccount addPost(Post post) {
+    public NkAccount addPost(Post post) {
         this.posts.add(post);
         post.setAccount(this);
         return this;
     }
 
-    public NgelmakAccount removePost(Post post) {
+    public NkAccount removePost(Post post) {
         this.posts.remove(post);
         post.setAccount(null);
         return this;
@@ -419,53 +436,50 @@ public class NgelmakAccount implements Serializable {
         this.reviews = reviews;
     }
 
-    public NgelmakAccount reviews(Set<Review> reviews) {
+    public NkAccount reviews(Set<Review> reviews) {
         this.setReviews(reviews);
         return this;
     }
 
-    public NgelmakAccount addReview(Review review) {
+    public NkAccount addReview(Review review) {
         this.reviews.add(review);
         review.setAccount(this);
         return this;
     }
 
-    public NgelmakAccount removeReview(Review review) {
+    public NkAccount removeReview(Review review) {
         this.reviews.remove(review);
         review.setAccount(null);
         return this;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof NgelmakAccount)) {
+        if (!(o instanceof NkAccount)) {
             return false;
         }
-        return getId() != null && getId().equals(((NgelmakAccount) o).getId());
+        return getId() != null && getId().equals(((NkAccount) o).getId());
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
     // prettier-ignore
     @Override
     public String toString() {
-        return "NgelmakAccount{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", foregroundPicture='" + getForegroundPicture() + "'" +
-            ", backgroundPicture='" + getBackgroundPicture() + "'" +
-            ", visibility='" + getVisibility() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
-            "}";
+        return "NkAccount{" +
+                "id=" + getId() +
+                ", name='" + getName() + "'" +
+                ", description='" + getDescription() + "'" +
+                ", foregroundPicture='" + getForegroundPicture() + "'" +
+                ", backgroundPicture='" + getBackgroundPicture() + "'" +
+                ", visibility='" + getVisibility() + "'" +
+                ", createdAt='" + getCreatedAt() + "'" +
+                "}";
     }
 }

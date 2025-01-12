@@ -1,13 +1,27 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.open.ngelmakproject.domain.enumeration.Status;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A Review.
@@ -47,14 +61,13 @@ public class Review implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(
-        value = { "configuration", "user", "reports", "owners", "comments", "memberships", "subscriptions", "posts", "reviews" },
-        allowSetters = true
-    )
-    private NgelmakAccount account;
+    @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
+            "subscriptions", "posts", "reviews" }, allowSetters = true)
+    private NkAccount account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "reviews", "postRelated", "commentRelated", "accountRelated", "issuedby" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "reviews", "postRelated", "commentRelated", "accountRelated",
+            "issuedby" }, allowSetters = true)
     private Ticket ticket;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -144,15 +157,15 @@ public class Review implements Serializable {
         return this;
     }
 
-    public NgelmakAccount getAccount() {
+    public NkAccount getAccount() {
         return this.account;
     }
 
-    public void setAccount(NgelmakAccount ngelmakAccount) {
+    public void setAccount(NkAccount ngelmakAccount) {
         this.account = ngelmakAccount;
     }
 
-    public Review account(NgelmakAccount ngelmakAccount) {
+    public Review account(NkAccount ngelmakAccount) {
         this.setAccount(ngelmakAccount);
         return this;
     }
@@ -183,8 +196,6 @@ public class Review implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -198,7 +209,6 @@ public class Review implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -206,10 +216,10 @@ public class Review implements Serializable {
     @Override
     public String toString() {
         return "Review{" +
-            "id=" + getId() +
-            ", at='" + getAt() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", timeout=" + getTimeout() +
-            "}";
+                "id=" + getId() +
+                ", at='" + getAt() + "'" +
+                ", status='" + getStatus() + "'" +
+                ", timeout=" + getTimeout() +
+                "}";
     }
 }

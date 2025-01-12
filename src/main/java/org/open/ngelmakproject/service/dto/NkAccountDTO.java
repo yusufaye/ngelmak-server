@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NgelmakAccountDTO implements Serializable {
+public class NkAccountDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

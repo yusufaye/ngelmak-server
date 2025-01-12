@@ -89,14 +89,14 @@ public class ConfigService {
     }
 
     /**
-     *  Get all the configs where NgelmakAccount is {@code null}.
+     *  Get all the configs where NkAccount is {@code null}.
      *  @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<Config> findAllWhereNgelmakAccountIsNull() {
-        log.debug("Request to get all configs where NgelmakAccount is null");
+    public List<Config> findAllWhereNkAccountIsNull() {
+        log.debug("Request to get all configs where NkAccount is null");
         return StreamSupport.stream(configRepository.findAll().spliterator(), false)
-            .filter(config -> config.getNgelmakAccount() == null)
+            .filter(config -> config.getNkAccount() == null)
             .toList();
     }
 

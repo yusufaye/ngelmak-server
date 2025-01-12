@@ -198,7 +198,7 @@ public class AccountResource {
      */
     @PutMapping("/account/upload-image")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public ResponseEntity<AdminUserDTO> requestCertification(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<AdminUserDTO> upload(@RequestParam("file") MultipartFile file) {
         log.debug("REST request to upload the user's account image");
         userService.upload(file);
         return ResponseUtil.wrapOrNotFound(userService.upload(file));

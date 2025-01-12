@@ -2,7 +2,7 @@ package org.open.ngelmakproject.repository;
 
 import java.lang.StackWalker.Option;
 
-import org.open.ngelmakproject.domain.NgelmakAccount;
+import org.open.ngelmakproject.domain.NkAccount;
 import org.open.ngelmakproject.domain.User;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -11,10 +11,10 @@ import java.util.Optional;
 
 
 /**
- * Spring Data JPA repository for the NgelmakAccount entity.
+ * Spring Data JPA repository for the NkAccount entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface NgelmakAccountRepository extends JpaRepository<NgelmakAccount, Long> {
-    Optional<NgelmakAccount> findOneByUser(User user);
+public interface NkAccountRepository extends JpaRepository<NkAccount, Long> {
+    Optional<NkAccount> findOneByUser(User user);
 }

@@ -1,7 +1,7 @@
 package org.open.ngelmakproject.service;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URL;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -57,16 +57,16 @@ public class AttachmentService {
     public List<Attachment> save(Post post, List<Attachment> attachments, List<MultipartFile> files) {
         log.debug("Request to save Attachment : {}", attachments);
         MultipartFile file;
-        Path path = null;
+        URL url = null;
         int file_index = 0;
-        String[] dirs = post.getDirectories(); // path where to save the attachment file.
+        String[] dirs = post.path(); // path where to save the attachment file.
         for (Attachment attachment : attachments) {
             attachment.setPost(post);
             if (!attachment.getCategory().equals(AttachmentCategory.TEXT)) {
                 file = files.get(file_index++);
-                path = fileStorageService.store(file, attachment.getFilename(), dirs);
+                url = fileStorageService.store(file, true, attachment.getFilename(), dirs);
                 attachment.size(file.getSize())
-                        .url(path.toString());
+                        .url(url.toString());
             }
         }
         return attachmentRepository.saveAll(attachments);
@@ -179,7 +179,7 @@ public class AttachmentService {
         log.debug("Request to delete Attachment : {}", attachments);
         for (Attachment attachment : attachments) {
             if (!attachment.getCategory().equals(AttachmentCategory.TEXT)) {
-                fileStorageService.deleteFile(attachment.getUrl());
+                fileStorageService.delete(attachment.getUrl());
             }
         }
         attachmentRepository.deleteAll(attachments);

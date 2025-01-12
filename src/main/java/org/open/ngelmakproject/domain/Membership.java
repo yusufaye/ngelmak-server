@@ -1,10 +1,19 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A Membership.
@@ -30,19 +39,15 @@ public class Membership implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(
-        value = { "configuration", "user", "reports", "owners", "comments", "memberships", "subscriptions", "posts", "reviews" },
-        allowSetters = true
-    )
-    private NgelmakAccount account;
+    @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
+            "subscriptions", "posts", "reviews" }, allowSetters = true)
+    private NkAccount account;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(
-        value = { "configuration", "user", "reports", "owners", "comments", "memberships", "subscriptions", "posts", "reviews" },
-        allowSetters = true
-    )
-    private NgelmakAccount subscriber;
+    @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
+            "subscriptions", "posts", "reviews" }, allowSetters = true)
+    private NkAccount subscriber;
 
     public Long getId() {
         return this.id;
@@ -83,33 +88,31 @@ public class Membership implements Serializable {
         this.activateNotification = activateNotification;
     }
 
-    public NgelmakAccount getAccount() {
+    public NkAccount getAccount() {
         return this.account;
     }
 
-    public void setAccount(NgelmakAccount ngelmakAccount) {
+    public void setAccount(NkAccount ngelmakAccount) {
         this.account = ngelmakAccount;
     }
 
-    public Membership account(NgelmakAccount ngelmakAccount) {
+    public Membership account(NkAccount ngelmakAccount) {
         this.setAccount(ngelmakAccount);
         return this;
     }
 
-    public NgelmakAccount getSubscriber() {
+    public NkAccount getSubscriber() {
         return this.subscriber;
     }
 
-    public void setSubscriber(NgelmakAccount ngelmakAccount) {
+    public void setSubscriber(NkAccount ngelmakAccount) {
         this.subscriber = ngelmakAccount;
     }
 
-    public Membership subscriber(NgelmakAccount ngelmakAccount) {
+    public Membership subscriber(NkAccount ngelmakAccount) {
         this.setSubscriber(ngelmakAccount);
         return this;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -124,7 +127,6 @@ public class Membership implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -132,9 +134,9 @@ public class Membership implements Serializable {
     @Override
     public String toString() {
         return "Membership{" +
-            "id=" + getId() +
-            ", at='" + getAt() + "'" +
-            ", activateNotification='" + getActivateNotification() + "'" +
-            "}";
+                "id=" + getId() +
+                ", at='" + getAt() + "'" +
+                ", activateNotification='" + getActivateNotification() + "'" +
+                "}";
     }
 }

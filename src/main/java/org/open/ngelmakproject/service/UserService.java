@@ -1,6 +1,6 @@
 package org.open.ngelmakproject.service;
 
-import java.nio.file.Path;
+import java.net.URL;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -386,8 +386,8 @@ public class UserService {
                  * Then we get for instance /public/images/ngelmak/ngelmak-log.jpg
                  */
                 String[] dirs = { "public", "images", user.getLogin() };
-                Path path = fileStorageService.store(file, file.getOriginalFilename(), dirs);
-                    user.setImageUrl(path.toString());
+                URL url = fileStorageService.store(file, true, file.getOriginalFilename(), dirs);
+                    user.setImageUrl(url.toString());
                     userRepository.save(user);
                     log.debug("Changed Information for User: {}", user);
                     return user;

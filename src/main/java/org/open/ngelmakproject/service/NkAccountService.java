@@ -4,12 +4,12 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.open.ngelmakproject.domain.Config;
-import org.open.ngelmakproject.domain.NgelmakAccount;
+import org.open.ngelmakproject.domain.NkAccount;
 import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
 import org.open.ngelmakproject.domain.enumeration.Visibility;
-import org.open.ngelmakproject.repository.NgelmakAccountRepository;
-import org.open.ngelmakproject.service.dto.NgelmakAccountDTO;
+import org.open.ngelmakproject.repository.NkAccountRepository;
+import org.open.ngelmakproject.service.dto.NkAccountDTO;
 import org.open.ngelmakproject.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,24 +21,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Implementation for managing
- * {@link org.open.ngelmakproject.domain.NgelmakAccount}.
+ * {@link org.open.ngelmakproject.domain.NkAccount}.
  */
 @Service
 @Transactional
-public class NgelmakAccountService {
+public class NkAccountService {
 
     private static final String ENTITY_NAME = "ngelmak-account";
 
-    private static final Logger log = LoggerFactory.getLogger(NgelmakAccountService.class);
+    private static final Logger log = LoggerFactory.getLogger(NkAccountService.class);
 
-    private final NgelmakAccountRepository ngelmakAccountRepository;
+    private final NkAccountRepository ngelmakAccountRepository;
 
     @Autowired
     private UserService userService;
     @Autowired
     private ConfigService configService;
 
-    public NgelmakAccountService(NgelmakAccountRepository ngelmakAccountRepository) {
+    public NkAccountService(NkAccountRepository ngelmakAccountRepository) {
         this.ngelmakAccountRepository = ngelmakAccountRepository;
     }
 
@@ -48,15 +48,15 @@ public class NgelmakAccountService {
      * @param ngelmakAccount the entity to save.
      * @return the persisted entity.
      */
-    public NgelmakAccount save(NgelmakAccountDTO ngelmakAccountDTO) {
-        log.info("Request to save NgelmakAccount : {}", ngelmakAccountDTO);
+    public NkAccount save(NkAccountDTO ngelmakAccountDTO) {
+        log.info("Request to save NkAccount : {}", ngelmakAccountDTO);
 
         Optional<User> optional = userService.getUserWithAuthorities();
         if (optional.isEmpty()) {
             throw new BadRequestAlertException("A new should always be attach to a user", ENTITY_NAME, "userNotFound");
         }
 
-        NgelmakAccount ngelmakAccount = new NgelmakAccount();
+        NkAccount ngelmakAccount = new NkAccount();
         ngelmakAccount.setCreatedAt(Instant.now());
         ngelmakAccount.setName(ngelmakAccountDTO.getName());
         ngelmakAccount.setVisibility(ngelmakAccountDTO.getVisibility());
@@ -76,8 +76,8 @@ public class NgelmakAccountService {
      * @param ngelmakAccount the entity to save.
      * @return the persisted entity.
      */
-    public NgelmakAccount update(NgelmakAccount ngelmakAccount) {
-        log.debug("Request to update NgelmakAccount : {}", ngelmakAccount);
+    public NkAccount update(NkAccount ngelmakAccount) {
+        log.debug("Request to update NkAccount : {}", ngelmakAccount);
         if (!ngelmakAccountRepository.existsById(ngelmakAccount.getId())) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
@@ -90,32 +90,32 @@ public class NgelmakAccountService {
      * @param ngelmakAccount the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<NgelmakAccount> partialUpdate(NgelmakAccount ngelmakAccount) {
-        log.debug("Request to partially update NgelmakAccount : {}", ngelmakAccount);
+    public Optional<NkAccount> partialUpdate(NkAccount ngelmakAccount) {
+        log.debug("Request to partially update NkAccount : {}", ngelmakAccount);
 
         return ngelmakAccountRepository
                 .findById(ngelmakAccount.getId())
-                .map(existingNgelmakAccount -> {
+                .map(existingNkAccount -> {
                     if (ngelmakAccount.getName() != null) {
-                        existingNgelmakAccount.setName(ngelmakAccount.getName());
+                        existingNkAccount.setName(ngelmakAccount.getName());
                     }
                     if (ngelmakAccount.getForegroundPicture() != null) {
-                        existingNgelmakAccount.setForegroundPicture(ngelmakAccount.getForegroundPicture());
+                        existingNkAccount.setForegroundPicture(ngelmakAccount.getForegroundPicture());
                     }
                     if (ngelmakAccount.getBackgroundPicture() != null) {
-                        existingNgelmakAccount.setBackgroundPicture(ngelmakAccount.getBackgroundPicture());
+                        existingNkAccount.setBackgroundPicture(ngelmakAccount.getBackgroundPicture());
                     }
                     if (ngelmakAccount.getVisibility() != null) {
-                        existingNgelmakAccount.setVisibility(ngelmakAccount.getVisibility());
+                        existingNkAccount.setVisibility(ngelmakAccount.getVisibility());
                     }
                     if (ngelmakAccount.getCreatedAt() != null) {
-                        existingNgelmakAccount.setCreatedAt(ngelmakAccount.getCreatedAt());
+                        existingNkAccount.setCreatedAt(ngelmakAccount.getCreatedAt());
                     }
                     if (ngelmakAccount.getDescription() != null) {
-                        existingNgelmakAccount.setDescription(ngelmakAccount.getDescription());
+                        existingNkAccount.setDescription(ngelmakAccount.getDescription());
                     }
 
-                    return existingNgelmakAccount;
+                    return existingNkAccount;
                 })
                 .map(ngelmakAccountRepository::save);
     }
@@ -127,8 +127,8 @@ public class NgelmakAccountService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<NgelmakAccount> findAll(Pageable pageable) {
-        log.debug("Request to get all NgelmakAccounts");
+    public Page<NkAccount> findAll(Pageable pageable) {
+        log.debug("Request to get all NkAccounts");
         return ngelmakAccountRepository.findAll(pageable);
     }
 
@@ -139,8 +139,8 @@ public class NgelmakAccountService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<NgelmakAccount> findOne(Long id) {
-        log.debug("Request to get NgelmakAccount : {}", id);
+    public Optional<NkAccount> findOne(Long id) {
+        log.debug("Request to get NkAccount : {}", id);
         return ngelmakAccountRepository.findById(id);
     }
 
@@ -151,13 +151,32 @@ public class NgelmakAccountService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<NgelmakAccount> findOneByCurrentUser() {
+    public Optional<NkAccount> findOneByCurrentUser() {
         Optional<User> optional = userService.getUserWithAuthorities();
         if (optional.isEmpty()) {
             throw new BadRequestAlertException("A new should always be attach to a user", ENTITY_NAME, "userNotFound");
         }
-        log.debug("Request to get NgelmakAccount for the connected user {}", optional.get());
+        log.debug("Request to get NkAccount for the connected user {}", optional.get());
         return ngelmakAccountRepository.findOneByUser(optional.get());
+    }
+
+    /**
+     * Get one ngelmakAccount by id.
+     *
+     * @param id the id of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public NkAccount findByCurrentUser() {
+        Optional<User> optional = userService.getUserWithAuthorities();
+        if (optional.isEmpty()) {
+            throw new BadRequestAlertException("A new should always be attach to a user", ENTITY_NAME, "userNotFound");
+        }
+        Optional<NkAccount> optional2 = ngelmakAccountRepository.findOneByUser(optional.get());
+        if (optional2.isEmpty()) {
+            throw new BadRequestAlertException("No account found for the given user", ENTITY_NAME, "nkAccountNotFound");
+        }
+        return optional2.get();
     }
 
     /**
@@ -166,7 +185,7 @@ public class NgelmakAccountService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete NgelmakAccount : {}", id);
+        log.debug("Request to delete NkAccount : {}", id);
         ngelmakAccountRepository.deleteById(id);
     }
 }

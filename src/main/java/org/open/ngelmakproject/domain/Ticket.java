@@ -1,13 +1,28 @@
 package org.open.ngelmakproject.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.open.ngelmakproject.domain.enumeration.TicketType;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * A Ticket.
@@ -64,19 +79,15 @@ public class Ticket implements Serializable {
     private Comment commentRelated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(
-        value = { "configuration", "user", "reports", "owners", "comments", "memberships", "subscriptions", "posts", "reviews" },
-        allowSetters = true
-    )
-    private NgelmakAccount accountRelated;
+    @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
+            "subscriptions", "posts", "reviews" }, allowSetters = true)
+    private NkAccount accountRelated;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(
-        value = { "configuration", "user", "reports", "owners", "comments", "memberships", "subscriptions", "posts", "reviews" },
-        allowSetters = true
-    )
-    private NgelmakAccount issuedby;
+    @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
+            "subscriptions", "posts", "reviews" }, allowSetters = true)
+    private NkAccount issuedby;
 
     public Long getId() {
         return this.id;
@@ -213,33 +224,31 @@ public class Ticket implements Serializable {
         return this;
     }
 
-    public NgelmakAccount getAccountRelated() {
+    public NkAccount getAccountRelated() {
         return this.accountRelated;
     }
 
-    public void setAccountRelated(NgelmakAccount ngelmakAccount) {
+    public void setAccountRelated(NkAccount ngelmakAccount) {
         this.accountRelated = ngelmakAccount;
     }
 
-    public Ticket accountRelated(NgelmakAccount ngelmakAccount) {
+    public Ticket accountRelated(NkAccount ngelmakAccount) {
         this.setAccountRelated(ngelmakAccount);
         return this;
     }
 
-    public NgelmakAccount getIssuedby() {
+    public NkAccount getIssuedby() {
         return this.issuedby;
     }
 
-    public void setIssuedby(NgelmakAccount ngelmakAccount) {
+    public void setIssuedby(NkAccount ngelmakAccount) {
         this.issuedby = ngelmakAccount;
     }
 
-    public Ticket issuedby(NgelmakAccount ngelmakAccount) {
+    public Ticket issuedby(NkAccount ngelmakAccount) {
         this.setIssuedby(ngelmakAccount);
         return this;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -254,7 +263,6 @@ public class Ticket implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -262,12 +270,12 @@ public class Ticket implements Serializable {
     @Override
     public String toString() {
         return "Ticket{" +
-            "id=" + getId() +
-            ", object='" + getObject() + "'" +
-            ", type='" + getType() + "'" +
-            ", at='" + getAt() + "'" +
-            ", closed='" + getClosed() + "'" +
-            ", content='" + getContent() + "'" +
-            "}";
+                "id=" + getId() +
+                ", object='" + getObject() + "'" +
+                ", type='" + getType() + "'" +
+                ", at='" + getAt() + "'" +
+                ", closed='" + getClosed() + "'" +
+                ", content='" + getContent() + "'" +
+                "}";
     }
 }

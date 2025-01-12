@@ -25,11 +25,6 @@ public class PageDTO<T> {
   private boolean hasPrevious; // Is there a previous page
   private List<SortDTO> sorts; // Sorting information
 
-  private String nextPageLink; // Link to the next page
-  private String previousPageLink; // Link to the previous page
-  private String firstPageLink; // Link to the first page
-  private String lastPageLink; // Link to the last page
-
   public PageDTO(Page<T> page) {
     content = page.getContent();
     number = page.getNumber();
@@ -41,12 +36,7 @@ public class PageDTO<T> {
     hasNext = page.hasNext();
     hasPrevious = page.hasPrevious();
     sorts = page.getSort().stream()
-                .map(order -> new SortDTO(order.getProperty(), order.getDirection().name()))
-                .collect(Collectors.toList());
-
-    // this.nextPageLink = nextPageLink;
-    // this.previousPageLink = previousPageLink;
-    // this.firstPageLink = firstPageLink;
-    // this.lastPageLink = lastPageLink;
+        .map(order -> new SortDTO(order.getProperty(), order.getDirection().name()))
+        .collect(Collectors.toList());
   }
 }

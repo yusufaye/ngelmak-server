@@ -122,6 +122,30 @@ postgres=# CREATE DATABASE <databas_name> OWNER <username>;
 CREATE DATABASE
 ```
 
+### Sql create sequence with Postgres
+
+When you use spring boot you can choose a strategy to set primary key value by creating sequence generator. This is the advanced version of the default auto-increment.
+
+To create a new sequence in postgres use the following:
+```
+DROP SEQUENCE IF EXISTS serial;
+CREATE SEQUENCE serial START 101;
+```
+Select the next number from this sequence:
+```
+SELECT nextval('serial');
+```
+Update the current value of the sequence:
+```
+SELECT setval('serial', 201);
+```
+Some time we might be in case where data are imported from `csv` file. Importing them won't update the current value of the sequence (`SELECT currval('serial')`). Thus, might lead to violation of the primary key during insertion with Spring JPA.
+
+To avoid that we can update the sequence as fellow:
+```
+SELECT setval('serial', max(id)) FROM nk_comment;
+```
+
 ## Getting started with PostgreSQL (linux teminal only)
 
 ### Connect to a PostgreSQL Database Server (via psql)
