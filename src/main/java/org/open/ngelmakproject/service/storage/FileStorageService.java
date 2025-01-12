@@ -3,6 +3,7 @@ package org.open.ngelmakproject.service.storage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,10 +29,21 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileStorageService {
 
   @Value("${nk.file.upload-directory.location}")
-  private String fileStorageLocation;
+  private String location;
+  @Value("${nk.file.public.access.location}")
+  private String publicAccessLocation;
+  @Value("${nk.file.private.access.location}")
+  private String privateAccessLocation;
 
-  public Path buildPath(String... dirs) throws IOException {
-    return Paths.get(fileStorageLocation.toString(), dirs);
+  @Value("${server.host}")
+  private String host;
+  @Value("${server.port}")
+  private Integer port;
+  @Value("${server.protocol}")
+  private String protocol;
+
+  public Path root(String... dirs) {
+    return Paths.get(location, dirs).toAbsolutePath();
   }
 
   public void init(Path path) {
@@ -47,30 +59,26 @@ public class FileStorageService {
    * 
    * @param file
    */
-  public final Path store(MultipartFile file, String filename, String... dirs) {
+  public final URL store(MultipartFile file, boolean isPublic, String filename, String... dirs) {
     try {
       if (file.isEmpty()) {
         throw new StorageException("Failed to store empty file.");
       }
-      Path destinationFile = buildPath(dirs).resolve(filename).normalize();
+      Path destinationFile = root(dirs).resolve(filename).normalize();
       if (!Files.exists(destinationFile.getParent())) {
         this.init(destinationFile.getParent());
       }
       try (InputStream inputStream = file.getInputStream()) {
         Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
-        return destinationFile;
+        return toUrl(destinationFile, isPublic);
       }
     } catch (IOException e) {
-      throw new StorageException("Failed to store file.", e);
+      throw new StorageException("Failed to store file: " + filename, e);
     }
   }
 
-  public Path load(String filename, String... dirs) throws IOException {
-    return buildPath(dirs).resolve(filename);
-  }
-
   public Stream<Path> loadAll(String... dirs) throws IOException {
-    final Path location = buildPath(dirs);
+    final Path location = root(dirs);
     try {
       return Files.walk(location, 1)
           .filter(path -> !path.equals(location))
@@ -80,25 +88,61 @@ public class FileStorageService {
     }
   }
 
-  public Resource loadAsResource(String filename, String... dirs) throws IOException {
+  public Resource loadAsResource(String url) throws IOException {
     try {
-      Path file = load(filename, dirs);
+      Path file = toPath(new URL(url));
       Resource resource = new UrlResource(file.toUri());
       if (resource.exists() || resource.isReadable()) {
         return resource;
       } else {
-        throw new StorageFileNotFoundException("Could not read file: " + filename);
+        throw new StorageFileNotFoundException("Could not read file: " + url);
       }
     } catch (MalformedURLException e) {
-      throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+      throw new StorageFileNotFoundException("Could not read file: " + url, e);
     }
   }
 
-  public void deleteFile(String filename, String... dirs) throws IOException {
-    FileSystemUtils.deleteRecursively(load(filename, dirs));
+  public void delete(URL url) {
+    try {
+      FileSystemUtils.deleteRecursively(toPath(url));
+    } catch (IOException e) {
+      throw new StorageFileNotFoundException("Error when deleting file : " + url, e);
+    }
   }
 
-  public void deleteDirectory(String... dirs) throws IOException {
-    FileSystemUtils.deleteRecursively(buildPath(dirs).toFile());
+  public void delete(String url) {
+    try {
+      delete(new URL(url));
+    } catch (MalformedURLException e) {
+      throw new StorageFileNotFoundException("Error when deleting file : " + url, e);
+    }
+  }
+
+  /**
+   * Change given path to url.
+   * The absolute path is splited to extract the workdir (location) and replace it
+   * with the public/private representation.
+   * 
+   * @param path     is the absolute path of the file.
+   * @param isPublic
+   * @return
+   * @throws MalformedURLException
+   */
+  private URL toUrl(Path path, boolean isPublic) throws MalformedURLException {
+    path = root().relativize(path); // child path
+    String file = String.format("/%s/%s", isPublic ? publicAccessLocation : privateAccessLocation, path.toString());
+    file = clean(file);
+    return new URL(this.protocol, this.host, this.port, file);
+  }
+
+  private Path toPath(URL url) throws MalformedURLException {
+    String file = url.getFile();
+    file = file.replace(this.privateAccessLocation, "").replace(this.publicAccessLocation, "");
+    file = clean(file);
+    return root(file);
+  }
+
+  private String clean(String path) {
+    return path.replace("//", "/").replace("/./", "/");
   }
 }

@@ -75,8 +75,8 @@ public class SpringSecurityConfig {
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll();
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/finish")).permitAll();
                     // Allow public access to static resources
-                    auth.requestMatchers(mvc.pattern("/ngelmak-directory/files/public/**")).permitAll();
-                    auth.requestMatchers(mvc.pattern("/ngelmak-directory/**")).authenticated();
+                    auth.requestMatchers(mvc.pattern("/resources/public/**")).permitAll();
+                    auth.requestMatchers(mvc.pattern("/resources/**")).authenticated();
 
                     // auth.requestMatchers(mvc.pattern("/api/admin/**")).hasAuthority(AuthoritiesConstants.ADMIN);
                     auth.requestMatchers(mvc.pattern("/api/**")).authenticated();
