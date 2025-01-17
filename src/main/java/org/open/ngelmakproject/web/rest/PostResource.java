@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -162,6 +163,21 @@ public class PostResource {
         log.debug("REST request to get a page of Posts");
         Page<Post> page = postService.findAll(pageable);
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(new PageDTO<>(page));
+    }
+
+    /**
+     * {@code GET  /posts/search?q=} : search posts that match the query.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of posts in body.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<PageDTO<Post>> fullTextSearch(@RequestParam("q") String query,
+            @ParameterObject Pageable pageable) {
+        log.debug("REST request to search Post : {}", query);
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
+                .body(postService.fullTextSearch(query, pageable));
     }
 
     /**
