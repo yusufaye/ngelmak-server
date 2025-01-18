@@ -164,9 +164,12 @@ public class PostService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Post> findAll(Pageable pageable) {
+    public PageDTO<Post> findAll(String query, Pageable pageable) {
         log.debug("Request to get all Posts");
-        return postRepository.findAll(pageable);
+        if (query.length() > 5) {
+            return fullTextSearch(query, pageable);
+        }
+        return new PageDTO<>(postRepository.findAll(pageable));
     }
 
     /**
