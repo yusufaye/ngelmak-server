@@ -5,7 +5,7 @@ import java.time.Instant;
 
 import org.open.ngelmakproject.domain.enumeration.AttachmentCategory;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +47,9 @@ public class Attachment implements Serializable {
     @Column(name = "filename")
     private String filename;
 
+    @Column(name = "caption")
+    private String caption;
+
     @Column(name = "size")
     private Long size;
 
@@ -56,8 +59,11 @@ public class Attachment implements Serializable {
     @Column(name = "url")
     private String url;
 
-    @Column(name = "content", length = 2000)
-    private String content;
+    @Column(name = "poster_url")
+    private String posterUrl;
+
+    @Column(name = "text_content", length = 2000, nullable = true)
+    private String textContent;
 
     @NotNull
     @Column(name = "type", nullable = false)
@@ -68,7 +74,7 @@ public class Attachment implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = { "attachments", "reports", "comments", "account" }, allowSetters = true)
+    @JsonIncludeProperties(value = { "id" })
     private Post post;
 
     public Long getId() {
@@ -110,6 +116,19 @@ public class Attachment implements Serializable {
         this.position = position;
     }
 
+    public String getCaption() {
+        return this.caption;
+    }
+
+    public Attachment caption(String caption) {
+        this.caption = caption;
+        return this;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
     public String getFilename() {
         return this.filename;
     }
@@ -123,17 +142,17 @@ public class Attachment implements Serializable {
         this.filename = filename;
     }
 
-    public String getContent() {
-        return this.content;
+    public String getTextContent() {
+        return this.textContent;
     }
 
-    public Attachment content(String content) {
-        this.setContent(content);
+    public Attachment textContent(String textContent) {
+        this.setTextContent(textContent);
         return this;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTextContent(String textContent) {
+        this.textContent = textContent;
     }
 
     public String getType() {
@@ -188,6 +207,19 @@ public class Attachment implements Serializable {
         this.url = url;
     }
 
+    public String getPosterUrl() {
+        return this.posterUrl;
+    }
+
+    public Attachment posterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+        return this;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+
     public Instant getDeletedAt() {
         return this.deletedAt;
     }
@@ -236,7 +268,8 @@ public class Attachment implements Serializable {
         return "Attachment{" +
                 "id=" + getId() +
                 ", type='" + getType() + "'" +
-                ", content='" + getContent() + "'" +
+                ", caption='" + getCaption() + "'" +
+                ", content='" + getTextContent() + "'" +
                 ", type='" + getType() + "'" +
                 "}";
     }

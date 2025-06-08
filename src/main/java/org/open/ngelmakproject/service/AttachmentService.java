@@ -3,6 +3,8 @@ package org.open.ngelmakproject.service;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -54,60 +57,41 @@ public class AttachmentService {
      * @param attachment the entity to save.
      * @return the persisted entity.
      */
-    public List<Attachment> save(Post post, List<Attachment> attachments, List<MultipartFile> files) {
+    public List<Attachment> save(Post post, List<Attachment> attachments, List<MultipartFile> files,
+            List<MultipartFile> posters) {
         log.debug("Request to save Attachment : {}", attachments);
+        Attachment attachment;
         MultipartFile file;
+        MultipartFile poster;
         URL url = null;
-        int file_index = 0;
-        String[] dirs = post.path(); // path where to save the attachment file.
-        for (Attachment attachment : attachments) {
-            attachment.setPost(post);
-            if (!attachment.getCategory().equals(AttachmentCategory.TEXT)) {
-                file = files.get(file_index++);
-                url = fileStorageService.store(file, true, attachment.getFilename(), dirs);
+        URL posterUrl = null;
+        String filename = null;
+        String[] dirs = { "media", "attachments" }; // path where to save the attachment file.
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String format = date.format(formatter);
+        for (int i = 0; i < attachments.size(); i++) {
+            attachment = attachments.get(i);
+            file = files.get(i);
+            poster = posters.get(i);
+            if (file != null) {
+                filename = String.format("Ngelmak-%s-%s-%s",
+                        StringUtils.capitalize(attachment.getCategory().toString()), format,
+                        StringUtils.capitalize(file.getOriginalFilename()));
+                url = fileStorageService.store(file, true, filename, dirs);
                 attachment.size(file.getSize())
                         .url(url.toString());
             }
+            if (poster != null) {
+                filename = String.format("Ngelmak-Poster-%s-%s-%s",
+                        StringUtils.capitalize(AttachmentCategory.IMAGE.toString()), format,
+                        StringUtils.capitalize(file.getOriginalFilename().replaceFirst(".[a-zA-Z0-9]+$", ".png")));
+                posterUrl = fileStorageService.store(poster, true, filename, dirs);
+                attachment.setUrl(posterUrl.toString());
+            }
+            attachment.setPost(post);
         }
         return attachmentRepository.saveAll(attachments);
-    }
-
-    /**
-     * Update a attachment.
-     *
-     * @param attachment the entity to save.
-     * @return the persisted entity.
-     */
-    public Attachment update(Attachment attachment) {
-        log.debug("Request to update Attachment : {}", attachment);
-        return attachmentRepository.save(attachment);
-    }
-
-    /**
-     * Partially update a attachment.
-     *
-     * @param attachment the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Optional<Attachment> partialUpdate(Attachment attachment) {
-        log.debug("Request to partially update Attachment : {}", attachment);
-
-        return attachmentRepository
-                .findById(attachment.getId())
-                .map(existingAttachment -> {
-                    if (attachment.getType() != null) {
-                        existingAttachment.setType(attachment.getType());
-                    }
-                    if (attachment.getContent() != null) {
-                        existingAttachment.setContent(attachment.getContent());
-                    }
-                    if (attachment.getType() != null) {
-                        existingAttachment.setType(attachment.getType());
-                    }
-
-                    return existingAttachment;
-                })
-                .map(attachmentRepository::save);
     }
 
     /**
@@ -167,7 +151,9 @@ public class AttachmentService {
         log.debug("Request to delete Attachment : {}", attachments);
         Instant now = Instant.now();
         if (!post.getStatus().equals(Status.PENDING)) {
-            attachments.forEach(e -> e.deletedAt(now)); // mark all attachments as deleted.
+            // Mark the attachment as to be deleted by the cron.
+            attachments = attachmentRepository.findAllById(attachments.stream().map(Attachment::getId).toList())
+                    .stream().map(existingAttachement -> existingAttachement.deletedAt(now)).toList();
             attachmentRepository.saveAll(attachments);
         } else {
             // [WARN] This action cannot be cancelled.
@@ -180,6 +166,7 @@ public class AttachmentService {
         for (Attachment attachment : attachments) {
             if (!attachment.getCategory().equals(AttachmentCategory.TEXT)) {
                 fileStorageService.delete(attachment.getUrl());
+                fileStorageService.delete(attachment.getPosterUrl());
             }
         }
         attachmentRepository.deleteAll(attachments);

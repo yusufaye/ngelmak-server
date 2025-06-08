@@ -302,12 +302,12 @@ public class Comment implements Serializable {
         return this.account;
     }
 
-    public void setAccount(NkAccount ngelmakAccount) {
-        this.account = ngelmakAccount;
+    public void setAccount(NkAccount nkAccount) {
+        this.account = nkAccount;
     }
 
-    public Comment account(NkAccount ngelmakAccount) {
-        this.setAccount(ngelmakAccount);
+    public Comment account(NkAccount nkAccount) {
+        this.setAccount(nkAccount);
         return this;
     }
 

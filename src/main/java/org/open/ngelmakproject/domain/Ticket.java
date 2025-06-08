@@ -228,12 +228,12 @@ public class Ticket implements Serializable {
         return this.accountRelated;
     }
 
-    public void setAccountRelated(NkAccount ngelmakAccount) {
-        this.accountRelated = ngelmakAccount;
+    public void setAccountRelated(NkAccount nkAccount) {
+        this.accountRelated = nkAccount;
     }
 
-    public Ticket accountRelated(NkAccount ngelmakAccount) {
-        this.setAccountRelated(ngelmakAccount);
+    public Ticket accountRelated(NkAccount nkAccount) {
+        this.setAccountRelated(nkAccount);
         return this;
     }
 
@@ -241,12 +241,12 @@ public class Ticket implements Serializable {
         return this.issuedby;
     }
 
-    public void setIssuedby(NkAccount ngelmakAccount) {
-        this.issuedby = ngelmakAccount;
+    public void setIssuedby(NkAccount nkAccount) {
+        this.issuedby = nkAccount;
     }
 
-    public Ticket issuedby(NkAccount ngelmakAccount) {
-        this.setIssuedby(ngelmakAccount);
+    public Ticket issuedby(NkAccount nkAccount) {
+        this.setIssuedby(nkAccount);
         return this;
     }
 

@@ -47,7 +47,7 @@ public class PostService {
     @Autowired
     private AttachmentService attachmentService;
     @Autowired
-    private NkAccountService ngelmakAccountService;
+    private NkAccountService nkAccountService;
 
     @Autowired
     private EntityManager entityManager;
@@ -58,27 +58,17 @@ public class PostService {
      * @param post the entity to save.
      * @return the persisted entity.
      */
-    public Post save(Post post) {
+    public Post save(Post post, List<Attachment> attachments, List<MultipartFile> files, List<MultipartFile> posters) {
+        log.debug("Request to save Post : {}", post);
         // [TODO] we will need to change the default status to match with the fact that
         // some users can create posts that bypass some step validations.
         log.debug("Request to save Post : {}", post);
-        post.status(Status.PENDING) // default status is PENDING
+        post.status(Status.VALIDATED) // default status is PENDING
                 .at(Instant.now()) // set the current time
-                .account(ngelmakAccountService.findOneByCurrentUser().get()); // set the current connected user as
-                                                                              // creater of the post.
-        return postRepository.save(post);
-    }
-
-    /**
-     * Save a post.
-     *
-     * @param post the entity to save.
-     * @return the persisted entity.
-     */
-    public Post save(Post post, List<Attachment> attachments, List<MultipartFile> files) {
-        log.debug("Request to save Post : {}", post);
-        post = save(post);
-        attachments = attachmentService.save(post, attachments, files);
+                .account(nkAccountService.findByCurrentUser()); // set the current connected user as
+                                                                // creater of the post.
+        post = postRepository.save(post);
+        attachments = attachmentService.save(post, attachments, files, posters);
         post.setAttachments(new HashSet<Attachment>(attachments));
         return post;
     }
@@ -93,7 +83,7 @@ public class PostService {
      * @throws IOException
      */
     public Post update(Post post, List<Attachment> attachments, List<Attachment> deletedAttachments,
-            List<MultipartFile> files) throws IOException {
+            List<MultipartFile> files, List<MultipartFile> posters) throws IOException {
         log.debug("Request to update Post : {}", post);
         if (post.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -101,9 +91,12 @@ public class PostService {
         if (!postRepository.existsById(post.getId())) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        post.status(Status.PENDING).lastUpdate(Instant.now());
+        // post.setStatus(Status.PENDING);
+        post.setStatus(Status.VALIDATED);
+        post.setLastUpdate(Instant.now());
         this.partialUpdate(post);
-        attachments = attachmentService.save(post, attachments, files);
+        attachments = attachmentService.save(post, attachments,
+                files, posters);
         // [WARN] make sure to delete attachments only when all other actions are
         // successfully completed. Since the deleted actions of attachment may have
         // actions that cannot be cancelled, like removing files.
@@ -169,7 +162,7 @@ public class PostService {
         if (query.length() > 5) {
             return fullTextSearch(query, pageable);
         }
-        return new PageDTO<>(postRepository.findAll(pageable));
+        return new PageDTO<>(postRepository.findByStatusOrderByAtDesc(Status.VALIDATED, pageable));
     }
 
     /**
@@ -181,7 +174,10 @@ public class PostService {
     @Transactional(readOnly = true)
     public Optional<Post> findOne(Long id) {
         log.debug("Request to get Post : {}", id);
-        return postRepository.findById(id);
+        return postRepository.findById(id).map(existingPost -> {
+            existingPost.getAttachments().removeIf(e -> e.getDeletedAt() != null);
+            return existingPost;
+        });
     }
 
     /**
@@ -205,11 +201,11 @@ public class PostService {
                 "FROM ( " +
                 "  SELECT p.* FROM ( " +
                 "    SELECT *, ts_rank_cd(textsearchable_index_col, query) AS rank " +
-                "    FROM nk_post, to_tsquery('french', :fullText) query " +
+                "    FROM nk_post, websearch_to_tsquery('french', :fullText) query " +
                 "    WHERE status = 'VALIDATED' AND textsearchable_index_col @@ query " +
                 "    ) AS p " +
                 "  LEFT JOIN (SELECT id, ts_rank_cd(textsearchable_index_col, query) AS rank " +
-                "  FROM nk_post, to_tsquery('french', :fullText) query " +
+                "  FROM nk_post, websearch_to_tsquery('french', :fullText) query " +
                 "  WHERE textsearchable_index_col @@ query) AS a " +
                 "  ON p.account_id = a.id " +
                 "  ORDER BY a.rank,p.rank DESC " +
@@ -240,7 +236,7 @@ public class PostService {
                             .account(
                                     new NkAccount().id(t.get("id", Long.class))
                                             .name(t.get("account_name", String.class)))
-                            .postReference(
+                            .postReply(
                                     new Post()
                                             .id(t.get("post_reference_id", Long.class))
                                             .title(t.get("post_reference_title", String.class))

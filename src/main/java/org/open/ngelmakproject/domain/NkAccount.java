@@ -8,7 +8,6 @@ import java.util.Set;
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,28 +41,37 @@ public class NkAccount implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    // @NotNull
+    // @NotBlank
+    @Column(name = "identifier", length = 30, unique = true)
+    private String identifier;
+
     @NotNull
     @NotBlank
-    @Column(name = "name")
+    @Column(name = "name", length = 100, unique = true)
     private String name;
 
-    @NotNull
-    @NotBlank
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "foreground_picture")
-    private String foregroundPicture;
+    /**
+     * Avatar or profile image.
+     */
+    @Column(name = "avatar")
+    private String avatar;
 
-    @Column(name = "background_picture")
-    private String backgroundPicture;
+    /**
+     * Background image url.
+     */
+    @Column(name = "banner")
+    private String banner;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "visibility")
     private Accessibility visibility;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(name = "at")
+    private Instant at;
 
     /**
      * a default configuration can be set for visibility of posts and their eventual
@@ -100,11 +108,11 @@ public class NkAccount implements Serializable {
      * any user can subscribe to any other user's account which my eventually have
      * any subscriber
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "follower")
     @JsonIgnore
     private Set<Membership> memberships = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriber")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "following")
     @JsonIgnore
     private Set<Membership> subscriptions = new HashSet<>();
 
@@ -130,6 +138,19 @@ public class NkAccount implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    public NkAccount identifier(String identifier) {
+        this.setIdentifier(identifier);
+        return this;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getName() {
@@ -158,30 +179,30 @@ public class NkAccount implements Serializable {
         this.description = description;
     }
 
-    public String getForegroundPicture() {
-        return this.foregroundPicture;
+    public String getAvatar() {
+        return this.avatar;
     }
 
-    public NkAccount foregroundPicture(String foregroundPicture) {
-        this.setForegroundPicture(foregroundPicture);
+    public NkAccount avatar(String avatar) {
+        this.setAvatar(avatar);
         return this;
     }
 
-    public void setForegroundPicture(String foregroundPicture) {
-        this.foregroundPicture = foregroundPicture;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    public String getBackgroundPicture() {
-        return this.backgroundPicture;
+    public String getBanner() {
+        return this.banner;
     }
 
-    public NkAccount backgroundPicture(String backgroundPicture) {
-        this.setBackgroundPicture(backgroundPicture);
+    public NkAccount banner(String banner) {
+        this.setBanner(banner);
         return this;
     }
 
-    public void setBackgroundPicture(String backgroundPicture) {
-        this.backgroundPicture = backgroundPicture;
+    public void setBanner(String banner) {
+        this.banner = banner;
     }
 
     public Accessibility getVisibility() {
@@ -197,17 +218,17 @@ public class NkAccount implements Serializable {
         this.visibility = visibility;
     }
 
-    public Instant getCreatedAt() {
-        return this.createdAt;
+    public Instant getAt() {
+        return this.at;
     }
 
-    public NkAccount createdAt(Instant createdAt) {
-        this.setCreatedAt(createdAt);
+    public NkAccount at(Instant at) {
+        this.setAt(at);
         return this;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    public void setAt(Instant at) {
+        this.at = at;
     }
 
     public Config getConfiguration() {
@@ -335,10 +356,10 @@ public class NkAccount implements Serializable {
 
     public void setMemberships(Set<Membership> memberships) {
         if (this.memberships != null) {
-            this.memberships.forEach(i -> i.setAccount(null));
+            this.memberships.forEach(i -> i.setFollower(null));
         }
         if (memberships != null) {
-            memberships.forEach(i -> i.setAccount(this));
+            memberships.forEach(i -> i.setFollower(this));
         }
         this.memberships = memberships;
     }
@@ -350,13 +371,13 @@ public class NkAccount implements Serializable {
 
     public NkAccount addMemberships(Membership membership) {
         this.memberships.add(membership);
-        membership.setAccount(this);
+        membership.setFollower(this);
         return this;
     }
 
     public NkAccount removeMemberships(Membership membership) {
         this.memberships.remove(membership);
-        membership.setAccount(null);
+        membership.setFollower(null);
         return this;
     }
 
@@ -366,10 +387,10 @@ public class NkAccount implements Serializable {
 
     public void setSubscriptions(Set<Membership> memberships) {
         if (this.subscriptions != null) {
-            this.subscriptions.forEach(i -> i.setSubscriber(null));
+            this.subscriptions.forEach(i -> i.setFollower(null));
         }
         if (memberships != null) {
-            memberships.forEach(i -> i.setSubscriber(this));
+            memberships.forEach(i -> i.setFollower(this));
         }
         this.subscriptions = memberships;
     }
@@ -381,13 +402,13 @@ public class NkAccount implements Serializable {
 
     public NkAccount addSubscriptions(Membership membership) {
         this.subscriptions.add(membership);
-        membership.setSubscriber(this);
+        membership.setFollower(this);
         return this;
     }
 
     public NkAccount removeSubscriptions(Membership membership) {
         this.subscriptions.remove(membership);
-        membership.setSubscriber(null);
+        membership.setFollower(null);
         return this;
     }
 
@@ -474,12 +495,13 @@ public class NkAccount implements Serializable {
     public String toString() {
         return "NkAccount{" +
                 "id=" + getId() +
+                ", identifier='" + getIdentifier() + "'" +
                 ", name='" + getName() + "'" +
                 ", description='" + getDescription() + "'" +
-                ", foregroundPicture='" + getForegroundPicture() + "'" +
-                ", backgroundPicture='" + getBackgroundPicture() + "'" +
+                ", avatar='" + getAvatar() + "'" +
+                ", banner='" + getBanner() + "'" +
                 ", visibility='" + getVisibility() + "'" +
-                ", createdAt='" + getCreatedAt() + "'" +
+                ", at='" + getAt() + "'" +
                 "}";
     }
 }

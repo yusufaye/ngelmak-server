@@ -75,11 +75,11 @@ public class SpringSecurityConfig {
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll();
                     auth.requestMatchers(mvc.pattern("/api/account/reset-password/finish")).permitAll();
                     // Allow public access to static resources
+                    auth.requestMatchers(mvc.pattern("/api/**")).permitAll();
                     auth.requestMatchers(mvc.pattern("/resources/public/**")).permitAll();
                     auth.requestMatchers(mvc.pattern("/resources/**")).authenticated();
 
                     // auth.requestMatchers(mvc.pattern("/api/admin/**")).hasAuthority(AuthoritiesConstants.ADMIN);
-                    auth.requestMatchers(mvc.pattern("/api/**")).authenticated();
                     // auth.requestMatchers(mvc.pattern("/v3/api-docs/**")).hasAuthority(AuthoritiesConstants.ADMIN);
                     // auth.requestMatchers(mvc.pattern("/management/health")).permitAll();
                     // auth.requestMatchers(mvc.pattern("/management/health/**")).permitAll();

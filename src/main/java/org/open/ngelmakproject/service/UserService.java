@@ -385,7 +385,7 @@ public class UserService {
                  * By default, user profile images are downloaded to the public directory, allowing access without authentication.
                  * Then we get for instance /public/images/ngelmak/ngelmak-log.jpg
                  */
-                String[] dirs = { "public", "images", user.getLogin() };
+                String[] dirs = { "media", "user" };
                 URL url = fileStorageService.store(file, true, file.getOriginalFilename(), dirs);
                     user.setImageUrl(url.toString());
                     userRepository.save(user);

@@ -9,11 +9,13 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.open.ngelmakproject.domain.Attachment;
+import org.open.ngelmakproject.domain.NkAccount;
 import org.open.ngelmakproject.domain.Post;
 import org.open.ngelmakproject.repository.PostRepository;
 import org.open.ngelmakproject.service.PostService;
 import org.open.ngelmakproject.service.dto.PageDTO;
 import org.open.ngelmakproject.web.rest.errors.BadRequestAlertException;
+import org.open.ngelmakproject.web.rest.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.api.annotations.ParameterObject;
@@ -36,7 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotNull;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link org.open.ngelmakproject.domain.Post}.
@@ -72,13 +73,14 @@ public class PostResource {
      */
     @PostMapping("")
     public ResponseEntity<Post> createPost(@RequestPart Post post, @RequestPart List<Attachment> attachments,
-            @RequestPart(required = false) List<MultipartFile> files)
+            @RequestPart(required = false) List<MultipartFile> files,
+            @RequestPart(required = false) List<MultipartFile> posters)
             throws URISyntaxException {
         log.debug("REST request to save Post : {}", post);
         if (post.getId() != null) {
             throw new BadRequestAlertException("A new post cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        post = postService.save(post, attachments, files);
+        post = postService.save(post, attachments, files, posters);
         return ResponseEntity.created(new URI("/api/posts/" + post.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME,
                         post.getId().toString()))
@@ -103,10 +105,11 @@ public class PostResource {
             @RequestPart Post post,
             @RequestPart List<Attachment> attachments,
             @RequestPart(required = false) List<Attachment> deletedAttachments,
-            @RequestPart(required = false) List<MultipartFile> files)
+            @RequestPart(required = false) List<MultipartFile> files,
+            @RequestPart(required = false) List<MultipartFile> posters)
             throws URISyntaxException, IOException {
         log.debug("REST request to update Post : {}", post);
-        post = postService.update(post, attachments, deletedAttachments, files);
+        post = postService.update(post, attachments, deletedAttachments, files, posters);
         return ResponseEntity.ok()
                 .headers(
                         HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, post.getId().toString()))
@@ -154,28 +157,45 @@ public class PostResource {
      * {@code GET  /posts?q=} : get all the posts.
      *
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-     *         of posts in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of posts in body.
      */
     @GetMapping("")
-    public ResponseEntity<PageDTO<Post>> getAllPosts(@RequestParam(value = "q", defaultValue = "") String query, @ParameterObject Pageable pageable) {
+    public ResponseEntity<PageDTO<Post>> getAllPosts(@RequestParam(value = "q", defaultValue = "") String query,
+            @ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Posts : {}", query);
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(postService.findAll(query, pageable));
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
+                .body(postService.findAll(query, pageable));
+    }
+
+    /**
+     * {@code GET  /posts/nk-account/:id} : get all the posts.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of posts in body.
+     */
+    @GetMapping("/nk-account/{id}")
+    public ResponseEntity<PageDTO<Post>> getPostByAccount(@PathVariable("id") Long id, @ParameterObject Pageable pageable) {
+        log.debug("REST request to get a page of Posts by NkAccount : {}", id);
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
+                .body(new PageDTO<Post>(postRepository.findByAccount(new NkAccount().id(id), pageable)));
     }
 
     // /**
-    //  * {@code GET  /posts/search?q=} : search posts that match the query.
-    //  *
-    //  * @param pageable the pagination information.
-    //  * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-    //  *         of posts in body.
-    //  */
+    // * {@code GET /posts/search?q=} : search posts that match the query.
+    // *
+    // * @param pageable the pagination information.
+    // * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the
+    // list
+    // * of posts in body.
+    // */
     // @GetMapping("/search")
-    // public ResponseEntity<PageDTO<Post>> fullTextSearch(@RequestParam("q") String query,
-    //         @ParameterObject Pageable pageable) {
-    //     log.debug("REST request to search Post : {}", query);
-    //     return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
-    //             .body(postService.fullTextSearch(query, pageable));
+    // public ResponseEntity<PageDTO<Post>> fullTextSearch(@RequestParam("q") String
+    // query,
+    // @ParameterObject Pageable pageable) {
+    // log.debug("REST request to search Post : {}", query);
+    // return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60,
+    // TimeUnit.SECONDS))
+    // .body(postService.fullTextSearch(query, pageable));
     // }
 
     /**

@@ -41,13 +41,13 @@ public class Membership implements Serializable {
     @NotNull
     @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
             "subscriptions", "posts", "reviews" }, allowSetters = true)
-    private NkAccount account;
+    private NkAccount following;
 
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
             "subscriptions", "posts", "reviews" }, allowSetters = true)
-    private NkAccount subscriber;
+    private NkAccount follower; // The owner of the membership
 
     public Long getId() {
         return this.id;
@@ -88,29 +88,29 @@ public class Membership implements Serializable {
         this.activateNotification = activateNotification;
     }
 
-    public NkAccount getAccount() {
-        return this.account;
+    public NkAccount getFollower() {
+        return this.follower;
     }
 
-    public void setAccount(NkAccount ngelmakAccount) {
-        this.account = ngelmakAccount;
+    public void setFollower(NkAccount nkAccount) {
+        this.follower = nkAccount;
     }
 
-    public Membership account(NkAccount ngelmakAccount) {
-        this.setAccount(ngelmakAccount);
+    public Membership follower(NkAccount nkAccount) {
+        this.setFollower(nkAccount);
         return this;
     }
 
-    public NkAccount getSubscriber() {
-        return this.subscriber;
+    public NkAccount getFollowing() {
+        return this.following;
     }
 
-    public void setSubscriber(NkAccount ngelmakAccount) {
-        this.subscriber = ngelmakAccount;
+    public void setFollowing(NkAccount nkAccount) {
+        this.following = nkAccount;
     }
 
-    public Membership subscriber(NkAccount ngelmakAccount) {
-        this.setSubscriber(ngelmakAccount);
+    public Membership following(NkAccount nkAccount) {
+        this.setFollowing(nkAccount);
         return this;
     }
 

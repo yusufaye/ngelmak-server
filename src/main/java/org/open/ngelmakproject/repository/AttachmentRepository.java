@@ -1,6 +1,9 @@
 package org.open.ngelmakproject.repository;
 
+import java.util.List;
+
 import org.open.ngelmakproject.domain.Attachment;
+import org.open.ngelmakproject.domain.Post;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +12,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface AttachmentRepository extends JpaRepository<Attachment, Long> {}
+public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
+  List<Attachment> findByPost(Post post);
+}

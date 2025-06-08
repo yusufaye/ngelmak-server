@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.open.ngelmakproject.config.Constants;
 import org.open.ngelmakproject.domain.enumeration.Status;
 import org.open.ngelmakproject.domain.enumeration.Subject;
 import org.open.ngelmakproject.domain.enumeration.Visibility;
@@ -78,18 +77,18 @@ public class Post implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIncludeProperties(value = { "id", "content" })
-    private Post postReference;
+    private Post postReply;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @NotNull
-    @JsonIncludeProperties(value = { "id" })
+    @JsonIncludeProperties(value = { "id", "identifier", "name", "avatar" })
     private NkAccount account;
 
     /**
      * a post can be commented multiple times.
      */
     @OneToMany(mappedBy = "post")
-    @JsonIgnore
+    // @JsonIgnore
     private Set<Attachment> attachments = new HashSet<>();
 
     /**
@@ -327,15 +326,15 @@ public class Post implements Serializable {
     }
 
     public Post getPostReference() {
-        return this.postReference;
+        return this.postReply;
     }
 
-    public void setPostReference(Post postReference) {
-        this.postReference = postReference;
+    public void setPostReference(Post postReply) {
+        this.postReply = postReply;
     }
 
-    public Post postReference(Post postReference) {
-        this.setPostReference(postReference);
+    public Post postReply(Post postReply) {
+        this.setPostReference(postReply);
         return this;
     }
 
@@ -343,12 +342,12 @@ public class Post implements Serializable {
         return this.account;
     }
 
-    public void setAccount(NkAccount ngelmakAccount) {
-        this.account = ngelmakAccount;
+    public void setAccount(NkAccount nkAccount) {
+        this.account = nkAccount;
     }
 
-    public Post account(NkAccount ngelmakAccount) {
-        this.setAccount(ngelmakAccount);
+    public Post account(NkAccount nkAccount) {
+        this.setAccount(nkAccount);
         return this;
     }
 
@@ -371,24 +370,6 @@ public class Post implements Serializable {
         // see
         // https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
-    }
-
-    /**
-     * Path where to save the attachment file will be in the default root, in the
-     * default directory for attachments, the account id, and finaly in the folder
-     * named by the post id, i.e.,
-     * resources/upload-dir/attachment-repos/<ngelmak-id>/<post-id>/ngelmak-image.png.
-     * e.g., resources/upload-dir/attachment-repos/256/17623/ngelmak-image.png
-     * 
-     * @return the hierarchy directories on which the attachment will be saved.
-     */
-    public String[] path() {
-        String[] dirs = new String[] {
-                Constants.DEFAULT_ATTACHMENT_LOCAL_DIRECTORY, // default directory
-                this.getAccount().getId().toString(), // <ngelmak-account-id> as subdir
-                this.getId().toString(), // <post-id> as subdir
-        };
-        return dirs;
     }
 
     // prettier-ignore

@@ -146,7 +146,7 @@ public class ConfigResource {
         @RequestParam(name = "filter", required = false) String filter
     ) {
         if ("ngelmakaccount-is-null".equals(filter)) {
-            log.debug("REST request to get all Configs where ngelmakAccount is null");
+            log.debug("REST request to get all Configs where nkAccount is null");
             return new ResponseEntity<>(configService.findAllWhereNkAccountIsNull(), HttpStatus.OK);
         }
         log.debug("REST request to get a page of Configs");

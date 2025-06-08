@@ -207,7 +207,7 @@ Now let's perform a test to make sure that everything is fine:
 ```
 EXPLAIN ANALYZE
 SELECT title, ts_rank_cd(textsearchable_index_col, query) AS rank
-FROM nk_post, to_tsquery('vestigium') query
+FROM nk_post, websearch_to_tsquery('vestigium') query
 WHERE status = 'VALIDATED' AND textsearchable_index_col @@ query
 ORDER BY rank DESC
 LIMIT 10;
@@ -220,7 +220,7 @@ Limit  (cost=22.70..22.71 rows=1 width=22) (actual time=0.238..0.244 rows=6 loop
         Sort Key: (ts_rank_cd(nk_post.textsearchable_index_col, query.query)) DESC
         Sort Method: quicksort  Memory: 25kB
         ->  Nested Loop  (cost=18.66..22.69 rows=1 width=22) (actual time=0.187..0.224 rows=6 loops=1)
-              ->  Function Scan on to_tsquery query  (cost=0.25..0.26 rows=1 width=32) (actual time=0.063..0.064 rows=1 loops=1)
+              ->  Function Scan on websearch_to_tsquery query  (cost=0.25..0.26 rows=1 width=32) (actual time=0.063..0.064 rows=1 loops=1)
               ->  Bitmap Heap Scan on nk_post  (cost=18.41..22.42 rows=1 width=50) (actual time=0.110..0.131 rows=6 loops=1)
                     Recheck Cond: (((status)::text = 'VALIDATED'::text) AND (textsearchable_index_col @@ query.query))
                     Heap Blocks: exact=6
@@ -254,7 +254,7 @@ CREATE INDEX nk_account_textsearch_idx ON nk_account USING GIN (textsearchable_i
 ```
 EXPLAIN ANALYZE
 SELECT id, ts_rank_cd(textsearchable_index_col, query) AS rank
-FROM nk_account, to_tsquery('vestigium') query
+FROM nk_account, websearch_to_tsquery('vestigium') query
 WHERE textsearchable_index_col @@ query
 ORDER BY rank DESC;
 LIMIT 10;
@@ -268,11 +268,11 @@ Now we can put all together and check if everything is fine :
 EXPLAIN ANALYZE
 SELECT p.* FROM (
   SELECT *, ts_rank_cd(textsearchable_index_col, query) AS rank
-  FROM nk_post, to_tsquery('vestigium') query
+  FROM nk_post, websearch_to_tsquery('vestigium') query
   WHERE status='VALIDATED' AND textsearchable_index_col @@ query
   ) AS p
 LEFT JOIN (SELECT id, ts_rank_cd(textsearchable_index_col, query) AS rank
-FROM nk_post, to_tsquery('vestigium') query
+FROM nk_post, websearch_to_tsquery('vestigium') query
 WHERE textsearchable_index_col @@ query) AS a
 ON p.account_id=a.id
 ORDER BY a.rank,p.rank DESC
@@ -289,7 +289,7 @@ Limit  (cost=25.63..25.64 rows=1 width=428) (actual time=0.077..0.078 rows=1 loo
               Rows Removed by Join Filter: 5
               ->  Nested Loop  (cost=18.93..25.35 rows=1 width=452) (actual time=0.050..0.065 rows=6 loops=1)
                     ->  Nested Loop  (cost=18.66..22.69 rows=1 width=420) (actual time=0.047..0.053 rows=6 loops=1)
-                          ->  Function Scan on to_tsquery query  (cost=0.25..0.26 rows=1 width=32) (actual time=0.016..0.016 rows=1 loops=1)
+                          ->  Function Scan on websearch_to_tsquery query  (cost=0.25..0.26 rows=1 width=32) (actual time=0.016..0.016 rows=1 loops=1)
                           ->  Bitmap Heap Scan on nk_post  (cost=18.41..22.42 rows=1 width=388) (actual time=0.029..0.035 rows=6 loops=1)
                                 Recheck Cond: (((status)::text = 'VALIDATED'::text) AND (textsearchable_index_col @@ query.query))
                                 Heap Blocks: exact=6
@@ -300,7 +300,7 @@ Limit  (cost=25.63..25.64 rows=1 width=428) (actual time=0.077..0.078 rows=1 loo
                                             Index Cond: (textsearchable_index_col @@ query.query)
                     ->  Index Scan using nk_post_pkey on nk_post nk_post_1  (cost=0.28..2.65 rows=1 width=40) (actual time=0.002..0.002 rows=1 loops=6)
                           Index Cond: (id = nk_post.account_id)
-              ->  Function Scan on to_tsquery query_1  (cost=0.25..0.26 rows=1 width=32) (actual time=0.000..0.000 rows=1 loops=6)
+              ->  Function Scan on websearch_to_tsquery query_1  (cost=0.25..0.26 rows=1 width=32) (actual time=0.000..0.000 rows=1 loops=6)
 Planning Time: 0.220 ms
 Execution Time: 0.106 ms
 ```
@@ -310,11 +310,11 @@ We can create a view from that :
 CREATE VIEW full_text_search_post AS
 SELECT p.* FROM (
   SELECT *, ts_rank_cd(textsearchable_index_col, query) AS rank
-  FROM nk_post, to_tsquery('vestigium') query
+  FROM nk_post, websearch_to_tsquery('vestigium') query
   WHERE status='VALIDATED' AND textsearchable_index_col @@ query
   ) AS p
 LEFT JOIN (SELECT id, ts_rank_cd(textsearchable_index_col, query) AS rank
-FROM nk_post, to_tsquery('vestigium') query
+FROM nk_post, websearch_to_tsquery('vestigium') query
 WHERE textsearchable_index_col @@ query) AS a
 ON p.account_id=a.id
 ORDER BY a.rank,p.rank DESC
@@ -329,11 +329,11 @@ SELECT
 FROM (
   SELECT p.* FROM (
     SELECT *, ts_rank_cd(textsearchable_index_col, query) AS rank
-    FROM nk_post, to_tsquery('vestigium') query
+    FROM nk_post, websearch_to_tsquery('vestigium creator') query
     WHERE status='VALIDATED' AND textsearchable_index_col @@ query
     ) AS p
   LEFT JOIN (SELECT id, ts_rank_cd(textsearchable_index_col, query) AS rank
-  FROM nk_post, to_tsquery('vestigium') query
+  FROM nk_post, websearch_to_tsquery('vestigium creator') query
   WHERE textsearchable_index_col @@ query) AS a
   ON p.account_id=a.id
   ORDER BY a.rank,p.rank DESC

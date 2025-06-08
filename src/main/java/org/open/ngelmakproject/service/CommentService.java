@@ -42,7 +42,7 @@ public class CommentService {
     private FileStorageService fileStorageService;
 
     @Autowired
-    private NkAccountService ngelmakAccountService;
+    private NkAccountService nkAccountService;
 
     private final CommentRepository commentRepository;
 
@@ -59,12 +59,12 @@ public class CommentService {
      */
     public Comment save(Comment comment, MultipartFile file) throws MalformedURLException {
         log.debug("Request to save Comment : {}", comment);
-        NkAccount ngelmakAccount = ngelmakAccountService.findByCurrentUser();
+        NkAccount nkAccount = nkAccountService.findByCurrentUser();
         if (comment.getOpinion() == null)
             comment.setOpinion(Opinion.DEFAULT);
-        comment.account(ngelmakAccount).setAt(Instant.now());
+        comment.account(nkAccount).setAt(Instant.now());
         if (file != null) {
-            String[] dirs = { "comments", "media" };
+            String[] dirs = { "media", "comments" };
             URL url = fileStorageService.store(file, true, file.getOriginalFilename(), dirs);
             comment.setUrl(url.toString());
         }

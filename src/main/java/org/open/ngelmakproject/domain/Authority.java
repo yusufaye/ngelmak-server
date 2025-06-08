@@ -28,9 +28,9 @@ public class Authority implements Serializable, Persistable<String> {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
     @NotNull
     @Size(max = 50)
-    @Id
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
