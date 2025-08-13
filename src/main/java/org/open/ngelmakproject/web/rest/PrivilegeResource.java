@@ -4,7 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.open.ngelmakproject.domain.Privilege;
+import org.open.ngelmakproject.domain.NkPrivilege;
 import org.open.ngelmakproject.domain.UserPrivilege;
 import org.open.ngelmakproject.repository.PrivilegeRepository;
 import org.open.ngelmakproject.repository.UserPrivilegeRepository;
@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,14 +25,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.validation.Valid;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
 
 /**
- * REST controller for managing {@link org.open.ngelmakproject.domain.Privilege}.
+ * REST controller for managing {@link org.open.ngelmakproject.domain.NkPrivilege}.
  */
 @RestController
 @RequestMapping("/api/privileges")
@@ -79,9 +76,9 @@ public class PrivilegeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of privileges in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Privilege>> getAllPrivileges() {
+    public ResponseEntity<List<NkPrivilege>> getAllPrivileges() {
         log.debug("REST request to get a page of Privileges");
-        List<Privilege> privileges = privilegeRepository.findAll();
+        List<NkPrivilege> privileges = privilegeRepository.findAll();
         return ResponseEntity.ok().body(privileges);
     }
 

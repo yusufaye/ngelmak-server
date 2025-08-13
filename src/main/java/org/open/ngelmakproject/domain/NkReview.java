@@ -24,12 +24,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * A Review.
+ * A NkReview.
  */
 @Entity
 @Table(name = "nk_review")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Review implements Serializable {
+public class NkReview implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +57,7 @@ public class Review implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "replyto")
     @JsonIgnoreProperties(value = { "reviews", "account", "ticket", "replyto" }, allowSetters = true)
-    private Set<Review> reviews = new HashSet<>();
+    private Set<NkReview> reviews = new HashSet<>();
 
     @ManyToOne(optional = false)
     @NotNull
@@ -68,17 +68,17 @@ public class Review implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "reviews", "postRelated", "commentRelated", "accountRelated",
             "issuedby" }, allowSetters = true)
-    private Ticket ticket;
+    private NkTicket ticket;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "reviews", "account", "ticket", "replyto" }, allowSetters = true)
-    private Review replyto;
+    private NkReview replyto;
 
     public Long getId() {
         return this.id;
     }
 
-    public Review id(Long id) {
+    public NkReview id(Long id) {
         this.setId(id);
         return this;
     }
@@ -91,7 +91,7 @@ public class Review implements Serializable {
         return this.at;
     }
 
-    public Review at(Instant at) {
+    public NkReview at(Instant at) {
         this.setAt(at);
         return this;
     }
@@ -104,7 +104,7 @@ public class Review implements Serializable {
         return this.status;
     }
 
-    public Review status(Status status) {
+    public NkReview status(Status status) {
         this.setStatus(status);
         return this;
     }
@@ -117,7 +117,7 @@ public class Review implements Serializable {
         return this.timeout;
     }
 
-    public Review timeout(Integer timeout) {
+    public NkReview timeout(Integer timeout) {
         this.setTimeout(timeout);
         return this;
     }
@@ -126,11 +126,11 @@ public class Review implements Serializable {
         this.timeout = timeout;
     }
 
-    public Set<Review> getReviews() {
+    public Set<NkReview> getReviews() {
         return this.reviews;
     }
 
-    public void setReviews(Set<Review> reviews) {
+    public void setReviews(Set<NkReview> reviews) {
         if (this.reviews != null) {
             this.reviews.forEach(i -> i.setReplyto(null));
         }
@@ -140,18 +140,18 @@ public class Review implements Serializable {
         this.reviews = reviews;
     }
 
-    public Review reviews(Set<Review> reviews) {
+    public NkReview reviews(Set<NkReview> reviews) {
         this.setReviews(reviews);
         return this;
     }
 
-    public Review addReview(Review review) {
+    public NkReview addReview(NkReview review) {
         this.reviews.add(review);
         review.setReplyto(this);
         return this;
     }
 
-    public Review removeReview(Review review) {
+    public NkReview removeReview(NkReview review) {
         this.reviews.remove(review);
         review.setReplyto(null);
         return this;
@@ -165,33 +165,33 @@ public class Review implements Serializable {
         this.account = nkAccount;
     }
 
-    public Review account(NkAccount nkAccount) {
+    public NkReview account(NkAccount nkAccount) {
         this.setAccount(nkAccount);
         return this;
     }
 
-    public Ticket getTicket() {
+    public NkTicket getTicket() {
         return this.ticket;
     }
 
-    public void setTicket(Ticket ticket) {
+    public void setTicket(NkTicket ticket) {
         this.ticket = ticket;
     }
 
-    public Review ticket(Ticket ticket) {
+    public NkReview ticket(NkTicket ticket) {
         this.setTicket(ticket);
         return this;
     }
 
-    public Review getReplyto() {
+    public NkReview getReplyto() {
         return this.replyto;
     }
 
-    public void setReplyto(Review review) {
+    public void setReplyto(NkReview review) {
         this.replyto = review;
     }
 
-    public Review replyto(Review review) {
+    public NkReview replyto(NkReview review) {
         this.setReplyto(review);
         return this;
     }
@@ -201,10 +201,10 @@ public class Review implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Review)) {
+        if (!(o instanceof NkReview)) {
             return false;
         }
-        return getId() != null && getId().equals(((Review) o).getId());
+        return getId() != null && getId().equals(((NkReview) o).getId());
     }
 
     @Override
@@ -215,7 +215,7 @@ public class Review implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Review{" +
+        return "NkReview{" +
                 "id=" + getId() +
                 ", at='" + getAt() + "'" +
                 ", status='" + getStatus() + "'" +

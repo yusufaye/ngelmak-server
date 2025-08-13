@@ -20,12 +20,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * A Attachment.
+ * A NkAttachment.
  */
 @Entity
 @Table(name = "nk_attachment")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Attachment implements Serializable {
+public class NkAttachment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -75,13 +75,13 @@ public class Attachment implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     @JsonIncludeProperties(value = { "id" })
-    private Post post;
+    private NkArticle article;
 
     public Long getId() {
         return this.id;
     }
 
-    public Attachment id(Long id) {
+    public NkAttachment id(Long id) {
         this.setId(id);
         return this;
     }
@@ -94,7 +94,7 @@ public class Attachment implements Serializable {
         return this.category;
     }
 
-    public Attachment category(AttachmentCategory category) {
+    public NkAttachment category(AttachmentCategory category) {
         this.setCategory(category);
         return this;
     }
@@ -107,7 +107,7 @@ public class Attachment implements Serializable {
         return this.position;
     }
 
-    public Attachment position(Integer position) {
+    public NkAttachment position(Integer position) {
         this.position = position;
         return this;
     }
@@ -120,7 +120,7 @@ public class Attachment implements Serializable {
         return this.caption;
     }
 
-    public Attachment caption(String caption) {
+    public NkAttachment caption(String caption) {
         this.caption = caption;
         return this;
     }
@@ -133,7 +133,7 @@ public class Attachment implements Serializable {
         return this.filename;
     }
 
-    public Attachment filename(String filename) {
+    public NkAttachment filename(String filename) {
         this.filename = filename;
         return this;
     }
@@ -146,7 +146,7 @@ public class Attachment implements Serializable {
         return this.textContent;
     }
 
-    public Attachment textContent(String textContent) {
+    public NkAttachment textContent(String textContent) {
         this.setTextContent(textContent);
         return this;
     }
@@ -159,7 +159,7 @@ public class Attachment implements Serializable {
         return this.type;
     }
 
-    public Attachment type(String type) {
+    public NkAttachment type(String type) {
         this.type = type;
         return this;
     }
@@ -172,7 +172,7 @@ public class Attachment implements Serializable {
         return this.size;
     }
 
-    public Attachment size(Long size) {
+    public NkAttachment size(Long size) {
         this.size = size;
         return this;
     }
@@ -185,7 +185,7 @@ public class Attachment implements Serializable {
         return this.duration;
     }
 
-    public Attachment duration(Integer duration) {
+    public NkAttachment duration(Integer duration) {
         this.duration = duration;
         return this;
     }
@@ -198,7 +198,7 @@ public class Attachment implements Serializable {
         return this.url;
     }
 
-    public Attachment url(String url) {
+    public NkAttachment url(String url) {
         this.url = url;
         return this;
     }
@@ -207,16 +207,16 @@ public class Attachment implements Serializable {
         this.url = url;
     }
 
-    public String getPosterUrl() {
+    public String getArticleerUrl() {
         return this.posterUrl;
     }
 
-    public Attachment posterUrl(String posterUrl) {
+    public NkAttachment posterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
         return this;
     }
 
-    public void setPosterUrl(String posterUrl) {
+    public void setArticleerUrl(String posterUrl) {
         this.posterUrl = posterUrl;
     }
 
@@ -224,7 +224,7 @@ public class Attachment implements Serializable {
         return this.deletedAt;
     }
 
-    public Attachment deletedAt(Instant deletedAt) {
+    public NkAttachment deletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
         return this;
     }
@@ -233,16 +233,16 @@ public class Attachment implements Serializable {
         this.deletedAt = deletedAt;
     }
 
-    public Post getPost() {
-        return this.post;
+    public NkArticle getArticle() {
+        return this.article;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setArticle(NkArticle article) {
+        this.article = article;
     }
 
-    public Attachment post(Post post) {
-        this.setPost(post);
+    public NkAttachment article(NkArticle article) {
+        this.setArticle(article);
         return this;
     }
 
@@ -251,10 +251,10 @@ public class Attachment implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Attachment)) {
+        if (!(o instanceof NkAttachment)) {
             return false;
         }
-        return getId() != null && getId().equals(((Attachment) o).getId());
+        return getId() != null && getId().equals(((NkAttachment) o).getId());
     }
 
     @Override
@@ -265,7 +265,7 @@ public class Attachment implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Attachment{" +
+        return "NkAttachment{" +
                 "id=" + getId() +
                 ", type='" + getType() + "'" +
                 ", caption='" + getCaption() + "'" +

@@ -1,13 +1,13 @@
 package org.open.ngelmakproject.repository;
 
-import org.open.ngelmakproject.domain.NkPrivilege;
+import org.open.ngelmakproject.domain.NkFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the Privilege entity.
+ * Spring Data JPA repository for the NkFile entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PrivilegeRepository extends JpaRepository<NkPrivilege, String> {
+public interface FileRepository extends JpaRepository<NkFile, Long> {
 }

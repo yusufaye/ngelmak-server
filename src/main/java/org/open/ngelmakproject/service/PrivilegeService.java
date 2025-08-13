@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Implementation for managing
- * {@link org.open.ngelmakproject.domain.Privilege}.
+ * {@link org.open.ngelmakproject.domain.NkPrivilege}.
  */
 @Service
 @Transactional

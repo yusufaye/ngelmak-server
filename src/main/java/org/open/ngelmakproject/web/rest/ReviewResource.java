@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.open.ngelmakproject.domain.Review;
+import org.open.ngelmakproject.domain.NkReview;
 import org.open.ngelmakproject.repository.ReviewRepository;
 import org.open.ngelmakproject.service.ReviewService;
 import org.open.ngelmakproject.web.rest.errors.BadRequestAlertException;
@@ -26,7 +26,7 @@ import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
- * REST controller for managing {@link org.open.ngelmakproject.domain.Review}.
+ * REST controller for managing {@link org.open.ngelmakproject.domain.NkReview}.
  */
 @RestController
 @RequestMapping("/api/reviews")
@@ -56,8 +56,8 @@ public class ReviewResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Review> createReview(@Valid @RequestBody Review review) throws URISyntaxException {
-        log.debug("REST request to save Review : {}", review);
+    public ResponseEntity<NkReview> createReview(@Valid @RequestBody NkReview review) throws URISyntaxException {
+        log.debug("REST request to save NkReview : {}", review);
         if (review.getId() != null) {
             throw new BadRequestAlertException("A new review cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -78,11 +78,11 @@ public class ReviewResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Review> updateReview(
+    public ResponseEntity<NkReview> updateReview(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Review review
+        @Valid @RequestBody NkReview review
     ) throws URISyntaxException {
-        log.debug("REST request to update Review : {}, {}", id, review);
+        log.debug("REST request to update NkReview : {}, {}", id, review);
         if (review.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -112,11 +112,11 @@ public class ReviewResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Review> partialUpdateReview(
+    public ResponseEntity<NkReview> partialUpdateReview(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Review review
+        @NotNull @RequestBody NkReview review
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Review partially : {}, {}", id, review);
+        log.debug("REST request to partial update NkReview partially : {}, {}", id, review);
         if (review.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -128,7 +128,7 @@ public class ReviewResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Review> result = reviewService.partialUpdate(review);
+        Optional<NkReview> result = reviewService.partialUpdate(review);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -143,9 +143,9 @@ public class ReviewResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of reviews in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Review>> getAllReviews(@ParameterObject Pageable pageable) {
+    public ResponseEntity<List<NkReview>> getAllReviews(@ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Reviews");
-        Page<Review> page = reviewService.findAll(pageable);
+        Page<NkReview> page = reviewService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -157,9 +157,9 @@ public class ReviewResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the review, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Review> getReview(@PathVariable("id") Long id) {
-        log.debug("REST request to get Review : {}", id);
-        Optional<Review> review = reviewService.findOne(id);
+    public ResponseEntity<NkReview> getReview(@PathVariable("id") Long id) {
+        log.debug("REST request to get NkReview : {}", id);
+        Optional<NkReview> review = reviewService.findOne(id);
         return ResponseUtil.wrapOrNotFound(review);
     }
 
@@ -171,7 +171,7 @@ public class ReviewResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReview(@PathVariable("id") Long id) {
-        log.debug("REST request to delete Review : {}", id);
+        log.debug("REST request to delete NkReview : {}", id);
         reviewService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

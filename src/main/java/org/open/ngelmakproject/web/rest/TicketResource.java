@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.open.ngelmakproject.domain.Ticket;
+import org.open.ngelmakproject.domain.NkTicket;
 import org.open.ngelmakproject.repository.TicketRepository;
 import org.open.ngelmakproject.service.TicketService;
 import org.open.ngelmakproject.web.rest.errors.BadRequestAlertException;
@@ -26,7 +26,7 @@ import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
- * REST controller for managing {@link org.open.ngelmakproject.domain.Ticket}.
+ * REST controller for managing {@link org.open.ngelmakproject.domain.NkTicket}.
  */
 @RestController
 @RequestMapping("/api/tickets")
@@ -56,8 +56,8 @@ public class TicketResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Ticket> createTicket(@Valid @RequestBody Ticket ticket) throws URISyntaxException {
-        log.debug("REST request to save Ticket : {}", ticket);
+    public ResponseEntity<NkTicket> createTicket(@Valid @RequestBody NkTicket ticket) throws URISyntaxException {
+        log.debug("REST request to save NkTicket : {}", ticket);
         if (ticket.getId() != null) {
             throw new BadRequestAlertException("A new ticket cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -78,11 +78,11 @@ public class TicketResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(
+    public ResponseEntity<NkTicket> updateTicket(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Ticket ticket
+        @Valid @RequestBody NkTicket ticket
     ) throws URISyntaxException {
-        log.debug("REST request to update Ticket : {}, {}", id, ticket);
+        log.debug("REST request to update NkTicket : {}, {}", id, ticket);
         if (ticket.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -112,11 +112,11 @@ public class TicketResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Ticket> partialUpdateTicket(
+    public ResponseEntity<NkTicket> partialUpdateTicket(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Ticket ticket
+        @NotNull @RequestBody NkTicket ticket
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Ticket partially : {}, {}", id, ticket);
+        log.debug("REST request to partial update NkTicket partially : {}, {}", id, ticket);
         if (ticket.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -128,7 +128,7 @@ public class TicketResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Ticket> result = ticketService.partialUpdate(ticket);
+        Optional<NkTicket> result = ticketService.partialUpdate(ticket);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -143,9 +143,9 @@ public class TicketResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tickets in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Ticket>> getAllTickets(@ParameterObject Pageable pageable) {
+    public ResponseEntity<List<NkTicket>> getAllTickets(@ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Tickets");
-        Page<Ticket> page = ticketService.findAll(pageable);
+        Page<NkTicket> page = ticketService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -157,9 +157,9 @@ public class TicketResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the ticket, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicket(@PathVariable("id") Long id) {
-        log.debug("REST request to get Ticket : {}", id);
-        Optional<Ticket> ticket = ticketService.findOne(id);
+    public ResponseEntity<NkTicket> getTicket(@PathVariable("id") Long id) {
+        log.debug("REST request to get NkTicket : {}", id);
+        Optional<NkTicket> ticket = ticketService.findOne(id);
         return ResponseUtil.wrapOrNotFound(ticket);
     }
 
@@ -171,7 +171,7 @@ public class TicketResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable("id") Long id) {
-        log.debug("REST request to delete Ticket : {}", id);
+        log.debug("REST request to delete NkTicket : {}", id);
         ticketService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

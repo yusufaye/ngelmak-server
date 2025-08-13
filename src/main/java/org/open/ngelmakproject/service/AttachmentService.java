@@ -8,8 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import org.open.ngelmakproject.domain.Attachment;
-import org.open.ngelmakproject.domain.Post;
+import org.open.ngelmakproject.domain.NkArticle;
+import org.open.ngelmakproject.domain.NkAttachment;
 import org.open.ngelmakproject.domain.enumeration.AttachmentCategory;
 import org.open.ngelmakproject.domain.enumeration.Status;
 import org.open.ngelmakproject.repository.AttachmentRepository;
@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Implementation for managing
- * {@link org.open.ngelmakproject.domain.Attachment}.
+ * {@link org.open.ngelmakproject.domain.NkAttachment}.
  */
 @Service
 @Transactional
@@ -46,8 +46,8 @@ public class AttachmentService {
      * @param attachment the entity to save.
      * @return the persisted entity.
      */
-    public Attachment save(Attachment attachment) {
-        log.debug("Request to save Attachment : {}", attachment);
+    public NkAttachment save(NkAttachment attachment) {
+        log.debug("Request to save NkAttachment : {}", attachment);
         return attachmentRepository.save(attachment);
     }
 
@@ -57,14 +57,14 @@ public class AttachmentService {
      * @param attachment the entity to save.
      * @return the persisted entity.
      */
-    public List<Attachment> save(Post post, List<Attachment> attachments, List<MultipartFile> files,
-            List<MultipartFile> posters) {
-        log.debug("Request to save Attachment : {}", attachments);
-        Attachment attachment;
+    public List<NkAttachment> save(NkArticle article, List<NkAttachment> attachments, List<MultipartFile> files,
+            List<MultipartFile> articleers) {
+        log.debug("Request to save NkAttachment : {}", attachments);
+        NkAttachment attachment;
         MultipartFile file;
-        MultipartFile poster;
+        MultipartFile articleer;
         URL url = null;
-        URL posterUrl = null;
+        URL articleerUrl = null;
         String filename = null;
         String[] dirs = { "media", "attachments" }; // path where to save the attachment file.
         LocalDate date = LocalDate.now();
@@ -73,7 +73,7 @@ public class AttachmentService {
         for (int i = 0; i < attachments.size(); i++) {
             attachment = attachments.get(i);
             file = files.get(i);
-            poster = posters.get(i);
+            articleer = articleers.get(i);
             if (file != null) {
                 filename = String.format("Ngelmak-%s-%s-%s",
                         StringUtils.capitalize(attachment.getCategory().toString()), format,
@@ -82,14 +82,14 @@ public class AttachmentService {
                 attachment.size(file.getSize())
                         .url(url.toString());
             }
-            if (poster != null) {
-                filename = String.format("Ngelmak-Poster-%s-%s-%s",
+            if (articleer != null) {
+                filename = String.format("Ngelmak-Articleer-%s-%s-%s",
                         StringUtils.capitalize(AttachmentCategory.IMAGE.toString()), format,
                         StringUtils.capitalize(file.getOriginalFilename().replaceFirst(".[a-zA-Z0-9]+$", ".png")));
-                posterUrl = fileStorageService.store(poster, true, filename, dirs);
-                attachment.setUrl(posterUrl.toString());
+                articleerUrl = fileStorageService.store(articleer, true, filename, dirs);
+                attachment.setUrl(articleerUrl.toString());
             }
-            attachment.setPost(post);
+            attachment.setArticle(article);
         }
         return attachmentRepository.saveAll(attachments);
     }
@@ -101,7 +101,7 @@ public class AttachmentService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Attachment> findAll(Pageable pageable) {
+    public Page<NkAttachment> findAll(Pageable pageable) {
         log.debug("Request to get all Attachments");
         return attachmentRepository.findAll(pageable);
     }
@@ -113,8 +113,8 @@ public class AttachmentService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Attachment> findOne(Long id) {
-        log.debug("Request to get Attachment : {}", id);
+    public Optional<NkAttachment> findOne(Long id) {
+        log.debug("Request to get NkAttachment : {}", id);
         return attachmentRepository.findById(id);
     }
 
@@ -127,12 +127,12 @@ public class AttachmentService {
      */
     @Transactional(readOnly = true)
     public Optional<byte[]> getResource(Long id) throws IOException {
-        log.debug("Request to get the actual resource of Attachment : {}", id);
-        Optional<Attachment> optional = attachmentRepository.findById(id);
+        log.debug("Request to get the actual resource of NkAttachment : {}", id);
+        Optional<NkAttachment> optional = attachmentRepository.findById(id);
         if (optional.isEmpty()) {
             return Optional.empty();
         }
-        Attachment attachment = optional.get();
+        NkAttachment attachment = optional.get();
         Resource resource = fileStorageService.loadAsResource(attachment.getUrl());
         return Optional.of(resource.getContentAsByteArray());
     }
@@ -147,12 +147,12 @@ public class AttachmentService {
      *
      * @throws IOException
      */
-    public void delete(Post post, List<Attachment> attachments) throws IOException {
-        log.debug("Request to delete Attachment : {}", attachments);
+    public void delete(NkArticle article, List<NkAttachment> attachments) throws IOException {
+        log.debug("Request to delete NkAttachment : {}", attachments);
         Instant now = Instant.now();
-        if (!post.getStatus().equals(Status.PENDING)) {
+        if (!article.getStatus().equals(Status.PENDING)) {
             // Mark the attachment as to be deleted by the cron.
-            attachments = attachmentRepository.findAllById(attachments.stream().map(Attachment::getId).toList())
+            attachments = attachmentRepository.findAllById(attachments.stream().map(NkAttachment::getId).toList())
                     .stream().map(existingAttachement -> existingAttachement.deletedAt(now)).toList();
             attachmentRepository.saveAll(attachments);
         } else {
@@ -161,12 +161,12 @@ public class AttachmentService {
         }
     }
 
-    public void deletePermenently(List<Attachment> attachments) throws IOException {
-        log.debug("Request to delete Attachment : {}", attachments);
-        for (Attachment attachment : attachments) {
+    public void deletePermenently(List<NkAttachment> attachments) throws IOException {
+        log.debug("Request to delete NkAttachment : {}", attachments);
+        for (NkAttachment attachment : attachments) {
             if (!attachment.getCategory().equals(AttachmentCategory.TEXT)) {
                 fileStorageService.delete(attachment.getUrl());
-                fileStorageService.delete(attachment.getPosterUrl());
+                fileStorageService.delete(attachment.getArticleerUrl());
             }
         }
         attachmentRepository.deleteAll(attachments);
@@ -178,7 +178,7 @@ public class AttachmentService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete Attachment : {}", id);
+        log.debug("Request to delete NkAttachment : {}", id);
         attachmentRepository.deleteById(id);
     }
 

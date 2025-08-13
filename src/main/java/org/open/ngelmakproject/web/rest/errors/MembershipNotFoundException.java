@@ -15,7 +15,7 @@ public class MembershipNotFoundException extends ErrorResponseException {
             HttpStatus.NOT_FOUND,
             ProblemDetailWithCauseBuilder.instance()
                 .withStatus(HttpStatus.NOT_FOUND.value())
-                .withTitle("Membership not found.")
+                .withTitle("NkMembership not found.")
                 .withProperty("message", "error.membershipNotFound")
                 .withProperty("params", "membership")
                 .build(),

@@ -1,12 +1,12 @@
 package org.open.ngelmakproject.repository;
 
-import org.open.ngelmakproject.domain.Review;
+import org.open.ngelmakproject.domain.NkReview;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the Review entity.
+ * Spring Data JPA repository for the NkReview entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {}
+public interface ReviewRepository extends JpaRepository<NkReview, Long> {}

@@ -10,7 +10,7 @@ import org.open.ngelmakproject.domain.NkAccount;
 import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.repository.NkAccountRepository;
 import org.open.ngelmakproject.security.AuthoritiesConstants;
-import org.open.ngelmakproject.service.NkAccountService;
+import org.open.ngelmakproject.service.AccountService;
 import org.open.ngelmakproject.service.dto.NkAccountDTO;
 import org.open.ngelmakproject.web.rest.errors.BadRequestAlertException;
 import org.open.ngelmakproject.web.rest.util.ResponseUtil;
@@ -66,11 +66,11 @@ public class NkAccountResource {
     @Value("${ngelmak.clientApp.name}")
     private String applicationName;
 
-    private final NkAccountService nkAccountService;
+    private final AccountService nkAccountService;
 
     private final NkAccountRepository nkAccountRepository;
 
-    public NkAccountResource(NkAccountService nkAccountService, NkAccountRepository nkAccountRepository) {
+    public NkAccountResource(AccountService nkAccountService, NkAccountRepository nkAccountRepository) {
         this.nkAccountService = nkAccountService;
         this.nkAccountRepository = nkAccountRepository;
     }

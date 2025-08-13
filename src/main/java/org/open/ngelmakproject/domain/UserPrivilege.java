@@ -55,7 +55,7 @@ public class UserPrivilege implements Serializable {
     @NotNull
     @ManyToOne(optional = false)
     @JsonIgnoreProperties(value = { "nkAccountPrivileges" }, allowSetters = true)
-    private Privilege privilege;
+    private NkPrivilege privilege;
 
     @ManyToOne(optional = true)
     @JsonIgnoreProperties(value = { "authorities" }, allowSetters = true)

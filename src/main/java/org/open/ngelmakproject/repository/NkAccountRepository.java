@@ -3,7 +3,7 @@ package org.open.ngelmakproject.repository;
 import java.lang.StackWalker.Option;
 
 import org.open.ngelmakproject.domain.NkAccount;
-import org.open.ngelmakproject.domain.Post;
+import org.open.ngelmakproject.domain.NkPost;
 import org.open.ngelmakproject.domain.User;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;

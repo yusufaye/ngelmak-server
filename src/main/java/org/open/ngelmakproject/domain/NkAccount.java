@@ -91,18 +91,18 @@ public class NkAccount implements Serializable {
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountRelated")
     @JsonIgnore
-    private Set<Ticket> reports = new HashSet<>();
+    private Set<NkTicket> reports = new HashSet<>();
 
     /**
      * must be is issued by a user account.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "issuedby")
     @JsonIgnore
-    private Set<Ticket> owners = new HashSet<>();
+    private Set<NkTicket> owners = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     @JsonIgnore
-    private Set<Comment> comments = new HashSet<>();
+    private Set<NkComment> comments = new HashSet<>();
 
     /**
      * any user can subscribe to any other user's account which my eventually have
@@ -110,22 +110,22 @@ public class NkAccount implements Serializable {
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "follower")
     @JsonIgnore
-    private Set<Membership> memberships = new HashSet<>();
+    private Set<NkMembership> memberships = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "following")
     @JsonIgnore
-    private Set<Membership> subscriptions = new HashSet<>();
+    private Set<NkMembership> subscriptions = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     @JsonIgnore
-    private Set<Post> posts = new HashSet<>();
+    private Set<NkPost> posts = new HashSet<>();
 
     /**
      * a review is done by a user
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     @JsonIgnore
-    private Set<Review> reviews = new HashSet<>();
+    private Set<NkReview> reviews = new HashSet<>();
 
     public Long getId() {
         return this.id;
@@ -257,11 +257,11 @@ public class NkAccount implements Serializable {
         return this;
     }
 
-    public Set<Ticket> getReports() {
+    public Set<NkTicket> getReports() {
         return this.reports;
     }
 
-    public void setReports(Set<Ticket> tickets) {
+    public void setReports(Set<NkTicket> tickets) {
         if (this.reports != null) {
             this.reports.forEach(i -> i.setAccountRelated(null));
         }
@@ -271,28 +271,28 @@ public class NkAccount implements Serializable {
         this.reports = tickets;
     }
 
-    public NkAccount reports(Set<Ticket> tickets) {
+    public NkAccount reports(Set<NkTicket> tickets) {
         this.setReports(tickets);
         return this;
     }
 
-    public NkAccount addReports(Ticket ticket) {
+    public NkAccount addReports(NkTicket ticket) {
         this.reports.add(ticket);
         ticket.setAccountRelated(this);
         return this;
     }
 
-    public NkAccount removeReports(Ticket ticket) {
+    public NkAccount removeReports(NkTicket ticket) {
         this.reports.remove(ticket);
         ticket.setAccountRelated(null);
         return this;
     }
 
-    public Set<Ticket> getOwners() {
+    public Set<NkTicket> getOwners() {
         return this.owners;
     }
 
-    public void setOwners(Set<Ticket> tickets) {
+    public void setOwners(Set<NkTicket> tickets) {
         if (this.owners != null) {
             this.owners.forEach(i -> i.setIssuedby(null));
         }
@@ -302,28 +302,28 @@ public class NkAccount implements Serializable {
         this.owners = tickets;
     }
 
-    public NkAccount owners(Set<Ticket> tickets) {
+    public NkAccount owners(Set<NkTicket> tickets) {
         this.setOwners(tickets);
         return this;
     }
 
-    public NkAccount addOwners(Ticket ticket) {
+    public NkAccount addOwners(NkTicket ticket) {
         this.owners.add(ticket);
         ticket.setIssuedby(this);
         return this;
     }
 
-    public NkAccount removeOwners(Ticket ticket) {
+    public NkAccount removeOwners(NkTicket ticket) {
         this.owners.remove(ticket);
         ticket.setIssuedby(null);
         return this;
     }
 
-    public Set<Comment> getComments() {
+    public Set<NkComment> getComments() {
         return this.comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(Set<NkComment> comments) {
         if (this.comments != null) {
             this.comments.forEach(i -> i.setAccount(null));
         }
@@ -333,28 +333,28 @@ public class NkAccount implements Serializable {
         this.comments = comments;
     }
 
-    public NkAccount comments(Set<Comment> comments) {
+    public NkAccount comments(Set<NkComment> comments) {
         this.setComments(comments);
         return this;
     }
 
-    public NkAccount addComment(Comment comment) {
+    public NkAccount addComment(NkComment comment) {
         this.comments.add(comment);
         comment.setAccount(this);
         return this;
     }
 
-    public NkAccount removeComment(Comment comment) {
+    public NkAccount removeComment(NkComment comment) {
         this.comments.remove(comment);
         comment.setAccount(null);
         return this;
     }
 
-    public Set<Membership> getMemberships() {
+    public Set<NkMembership> getMemberships() {
         return this.memberships;
     }
 
-    public void setMemberships(Set<Membership> memberships) {
+    public void setMemberships(Set<NkMembership> memberships) {
         if (this.memberships != null) {
             this.memberships.forEach(i -> i.setFollower(null));
         }
@@ -364,28 +364,28 @@ public class NkAccount implements Serializable {
         this.memberships = memberships;
     }
 
-    public NkAccount memberships(Set<Membership> memberships) {
+    public NkAccount memberships(Set<NkMembership> memberships) {
         this.setMemberships(memberships);
         return this;
     }
 
-    public NkAccount addMemberships(Membership membership) {
+    public NkAccount addMemberships(NkMembership membership) {
         this.memberships.add(membership);
         membership.setFollower(this);
         return this;
     }
 
-    public NkAccount removeMemberships(Membership membership) {
+    public NkAccount removeMemberships(NkMembership membership) {
         this.memberships.remove(membership);
         membership.setFollower(null);
         return this;
     }
 
-    public Set<Membership> getSubscriptions() {
+    public Set<NkMembership> getSubscriptions() {
         return this.subscriptions;
     }
 
-    public void setSubscriptions(Set<Membership> memberships) {
+    public void setSubscriptions(Set<NkMembership> memberships) {
         if (this.subscriptions != null) {
             this.subscriptions.forEach(i -> i.setFollower(null));
         }
@@ -395,28 +395,28 @@ public class NkAccount implements Serializable {
         this.subscriptions = memberships;
     }
 
-    public NkAccount subscriptions(Set<Membership> memberships) {
+    public NkAccount subscriptions(Set<NkMembership> memberships) {
         this.setSubscriptions(memberships);
         return this;
     }
 
-    public NkAccount addSubscriptions(Membership membership) {
+    public NkAccount addSubscriptions(NkMembership membership) {
         this.subscriptions.add(membership);
         membership.setFollower(this);
         return this;
     }
 
-    public NkAccount removeSubscriptions(Membership membership) {
+    public NkAccount removeSubscriptions(NkMembership membership) {
         this.subscriptions.remove(membership);
         membership.setFollower(null);
         return this;
     }
 
-    public Set<Post> getPosts() {
+    public Set<NkPost> getPosts() {
         return this.posts;
     }
 
-    public void setPosts(Set<Post> posts) {
+    public void setPosts(Set<NkPost> posts) {
         if (this.posts != null) {
             this.posts.forEach(i -> i.setAccount(null));
         }
@@ -426,28 +426,28 @@ public class NkAccount implements Serializable {
         this.posts = posts;
     }
 
-    public NkAccount posts(Set<Post> posts) {
+    public NkAccount posts(Set<NkPost> posts) {
         this.setPosts(posts);
         return this;
     }
 
-    public NkAccount addPost(Post post) {
+    public NkAccount addPost(NkPost post) {
         this.posts.add(post);
         post.setAccount(this);
         return this;
     }
 
-    public NkAccount removePost(Post post) {
+    public NkAccount removePost(NkPost post) {
         this.posts.remove(post);
         post.setAccount(null);
         return this;
     }
 
-    public Set<Review> getReviews() {
+    public Set<NkReview> getReviews() {
         return this.reviews;
     }
 
-    public void setReviews(Set<Review> reviews) {
+    public void setReviews(Set<NkReview> reviews) {
         if (this.reviews != null) {
             this.reviews.forEach(i -> i.setAccount(null));
         }
@@ -457,18 +457,18 @@ public class NkAccount implements Serializable {
         this.reviews = reviews;
     }
 
-    public NkAccount reviews(Set<Review> reviews) {
+    public NkAccount reviews(Set<NkReview> reviews) {
         this.setReviews(reviews);
         return this;
     }
 
-    public NkAccount addReview(Review review) {
+    public NkAccount addReview(NkReview review) {
         this.reviews.add(review);
         review.setAccount(this);
         return this;
     }
 
-    public NkAccount removeReview(Review review) {
+    public NkAccount removeReview(NkReview review) {
         this.reviews.remove(review);
         review.setAccount(null);
         return this;

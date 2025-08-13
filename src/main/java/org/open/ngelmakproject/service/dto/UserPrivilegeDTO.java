@@ -2,7 +2,7 @@ package org.open.ngelmakproject.service.dto;
 
 import java.io.Serializable;
 
-import org.open.ngelmakproject.domain.Privilege;
+import org.open.ngelmakproject.domain.NkPrivilege;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +28,7 @@ public class UserPrivilegeDTO implements Serializable {
     private String login;
 
     @NotNull
-    private Privilege privilege;
+    private NkPrivilege privilege;
     
     @NotNull
     @NotBlank

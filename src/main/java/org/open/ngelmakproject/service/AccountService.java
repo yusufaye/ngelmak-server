@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.open.ngelmakproject.domain.Config;
-import org.open.ngelmakproject.domain.Membership;
+import org.open.ngelmakproject.domain.NkMembership;
 import org.open.ngelmakproject.domain.NkAccount;
 import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
@@ -32,11 +32,11 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @Transactional
-public class NkAccountService {
+public class AccountService {
 
     private static final String ENTITY_NAME = "ngelmak-account";
 
-    private static final Logger log = LoggerFactory.getLogger(NkAccountService.class);
+    private static final Logger log = LoggerFactory.getLogger(AccountService.class);
 
     private final NkAccountRepository nkAccountRepository;
 
@@ -49,7 +49,7 @@ public class NkAccountService {
     @Autowired
     private FileStorageService fileStorageService;
 
-    public NkAccountService(NkAccountRepository nkAccountRepository) {
+    public AccountService(NkAccountRepository nkAccountRepository) {
         this.nkAccountRepository = nkAccountRepository;
     }
 
@@ -241,7 +241,7 @@ public class NkAccountService {
                 currAccount -> {
                     NkAccount followed = this.nkAccountRepository.findById(targetAccountId)
                             .orElseThrow(AccountNotFoundException::new);
-                    Membership membership = new Membership().follower(currAccount).following(followed).at(Instant.now());
+                    NkMembership membership = new NkMembership().follower(currAccount).following(followed).at(Instant.now());
                     membershipRepository.save(membership);
                     log.debug("A new relationship is created between {} and {}", currAccount, followed);
                     return currAccount;
@@ -254,7 +254,7 @@ public class NkAccountService {
                 currAccount -> {
                     NkAccount followed = new NkAccount().id(targetAccountId);
                     membershipRepository.findOneByFollowingAndFollower(followed, currAccount).ifPresent(membership -> this.membershipRepository.delete(membership));
-                    log.debug("Membership is now removed.", currAccount);
+                    log.debug("NkMembership is now removed.", currAccount);
                     return currAccount;
                 }).orElseThrow(AccountNotFoundException::new);
     }

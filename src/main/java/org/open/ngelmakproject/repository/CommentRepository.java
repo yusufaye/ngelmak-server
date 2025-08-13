@@ -1,25 +1,22 @@
 package org.open.ngelmakproject.repository;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-import org.open.ngelmakproject.domain.Comment;
-import org.open.ngelmakproject.domain.Post;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
+import org.open.ngelmakproject.domain.NkComment;
+import org.open.ngelmakproject.domain.NkPost;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the Comment entity.
+ * Spring Data JPA repository for the NkComment entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-  List<Comment> findByPost(Post post);
+public interface CommentRepository extends JpaRepository<NkComment, Long> {
+  List<NkComment> findByPost(NkPost post);
 
   // @Query("""
-  //   select new Comment(
+  //   select new NkComment(
   //     c.id,
   //     c.opinion,
   //     c.at,
@@ -31,12 +28,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   //     c.replayto,
   //     c.account
   //   )
-  //   from Comment c
+  //   from NkComment c
   //   where c.id = :id
   //   """)
-  // Optional<Comment> findById(@Param("id") Long id);
+  // Optional<NkComment> findById(@Param("id") Long id);
 
   // @Modifying
-  // @Query("update Comment c set c.content = :content and c.url = :url where u.id < :id")
+  // @Query("update NkComment c set c.content = :content and c.url = :url where u.id < :id")
   // void update(@Param("id") Long id, @Param("content") String content, @Param("url") String url);
 }

@@ -25,12 +25,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * A Ticket.
+ * A NkTicket.
  */
 @Entity
 @Table(name = "nk_ticket")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Ticket implements Serializable {
+public class NkTicket implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,15 +68,15 @@ public class Ticket implements Serializable {
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
     @JsonIgnoreProperties(value = { "reviews", "account", "ticket", "replyto" }, allowSetters = true)
-    private Set<Review> reviews = new HashSet<>();
+    private Set<NkReview> reviews = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "attachments", "reports", "comments", "account" }, allowSetters = true)
-    private Post postRelated;
+    private NkPost postRelated;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "reports", "comments", "post", "replayto", "account" }, allowSetters = true)
-    private Comment commentRelated;
+    private NkComment commentRelated;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "configuration", "user", "reports", "owners", "comments", "memberships",
@@ -93,7 +93,7 @@ public class Ticket implements Serializable {
         return this.id;
     }
 
-    public Ticket id(Long id) {
+    public NkTicket id(Long id) {
         this.setId(id);
         return this;
     }
@@ -106,7 +106,7 @@ public class Ticket implements Serializable {
         return this.object;
     }
 
-    public Ticket object(String object) {
+    public NkTicket object(String object) {
         this.setObject(object);
         return this;
     }
@@ -119,7 +119,7 @@ public class Ticket implements Serializable {
         return this.type;
     }
 
-    public Ticket type(TicketType type) {
+    public NkTicket type(TicketType type) {
         this.setType(type);
         return this;
     }
@@ -132,7 +132,7 @@ public class Ticket implements Serializable {
         return this.at;
     }
 
-    public Ticket at(Instant at) {
+    public NkTicket at(Instant at) {
         this.setAt(at);
         return this;
     }
@@ -145,7 +145,7 @@ public class Ticket implements Serializable {
         return this.closed;
     }
 
-    public Ticket closed(Boolean closed) {
+    public NkTicket closed(Boolean closed) {
         this.setClosed(closed);
         return this;
     }
@@ -158,7 +158,7 @@ public class Ticket implements Serializable {
         return this.content;
     }
 
-    public Ticket content(String content) {
+    public NkTicket content(String content) {
         this.setContent(content);
         return this;
     }
@@ -167,11 +167,11 @@ public class Ticket implements Serializable {
         this.content = content;
     }
 
-    public Set<Review> getReviews() {
+    public Set<NkReview> getReviews() {
         return this.reviews;
     }
 
-    public void setReviews(Set<Review> reviews) {
+    public void setReviews(Set<NkReview> reviews) {
         if (this.reviews != null) {
             this.reviews.forEach(i -> i.setTicket(null));
         }
@@ -181,45 +181,45 @@ public class Ticket implements Serializable {
         this.reviews = reviews;
     }
 
-    public Ticket reviews(Set<Review> reviews) {
+    public NkTicket reviews(Set<NkReview> reviews) {
         this.setReviews(reviews);
         return this;
     }
 
-    public Ticket addReview(Review review) {
+    public NkTicket addReview(NkReview review) {
         this.reviews.add(review);
         review.setTicket(this);
         return this;
     }
 
-    public Ticket removeReview(Review review) {
+    public NkTicket removeReview(NkReview review) {
         this.reviews.remove(review);
         review.setTicket(null);
         return this;
     }
 
-    public Post getPostRelated() {
+    public NkPost getPostRelated() {
         return this.postRelated;
     }
 
-    public void setPostRelated(Post post) {
+    public void setPostRelated(NkPost post) {
         this.postRelated = post;
     }
 
-    public Ticket postRelated(Post post) {
+    public NkTicket postRelated(NkPost post) {
         this.setPostRelated(post);
         return this;
     }
 
-    public Comment getCommentRelated() {
+    public NkComment getCommentRelated() {
         return this.commentRelated;
     }
 
-    public void setCommentRelated(Comment comment) {
+    public void setCommentRelated(NkComment comment) {
         this.commentRelated = comment;
     }
 
-    public Ticket commentRelated(Comment comment) {
+    public NkTicket commentRelated(NkComment comment) {
         this.setCommentRelated(comment);
         return this;
     }
@@ -232,7 +232,7 @@ public class Ticket implements Serializable {
         this.accountRelated = nkAccount;
     }
 
-    public Ticket accountRelated(NkAccount nkAccount) {
+    public NkTicket accountRelated(NkAccount nkAccount) {
         this.setAccountRelated(nkAccount);
         return this;
     }
@@ -245,7 +245,7 @@ public class Ticket implements Serializable {
         this.issuedby = nkAccount;
     }
 
-    public Ticket issuedby(NkAccount nkAccount) {
+    public NkTicket issuedby(NkAccount nkAccount) {
         this.setIssuedby(nkAccount);
         return this;
     }
@@ -255,10 +255,10 @@ public class Ticket implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Ticket)) {
+        if (!(o instanceof NkTicket)) {
             return false;
         }
-        return getId() != null && getId().equals(((Ticket) o).getId());
+        return getId() != null && getId().equals(((NkTicket) o).getId());
     }
 
     @Override
@@ -269,7 +269,7 @@ public class Ticket implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Ticket{" +
+        return "NkTicket{" +
                 "id=" + getId() +
                 ", object='" + getObject() + "'" +
                 ", type='" + getType() + "'" +

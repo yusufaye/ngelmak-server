@@ -5,8 +5,8 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 
-import org.open.ngelmakproject.domain.Comment;
 import org.open.ngelmakproject.domain.NkAccount;
+import org.open.ngelmakproject.domain.NkComment;
 import org.open.ngelmakproject.domain.enumeration.Opinion;
 import org.open.ngelmakproject.repository.CommentRepository;
 import org.open.ngelmakproject.service.storage.FileStorageService;
@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Implementation for managing
- * {@link org.open.ngelmakproject.domain.Comment}.
+ * {@link org.open.ngelmakproject.domain.NkComment}.
  */
 @Service
 @Transactional
@@ -42,7 +42,7 @@ public class CommentService {
     private FileStorageService fileStorageService;
 
     @Autowired
-    private NkAccountService nkAccountService;
+    private AccountService nkAccountService;
 
     private final CommentRepository commentRepository;
 
@@ -57,8 +57,8 @@ public class CommentService {
      * @return the persisted entity.
      * @throws MalformedURLException
      */
-    public Comment save(Comment comment, MultipartFile file) throws MalformedURLException {
-        log.debug("Request to save Comment : {}", comment);
+    public NkComment save(NkComment comment, MultipartFile file) throws MalformedURLException {
+        log.debug("Request to save NkComment : {}", comment);
         NkAccount nkAccount = nkAccountService.findByCurrentUser();
         if (comment.getOpinion() == null)
             comment.setOpinion(Opinion.DEFAULT);
@@ -77,8 +77,8 @@ public class CommentService {
      * @param comment the entity to update partially.
      * @return the persisted entity.
      */
-    public Comment update(Comment comment, MultipartFile file) {
-        log.info("Request to update Comment : {}", comment);
+    public NkComment update(NkComment comment, MultipartFile file) {
+        log.info("Request to update NkComment : {}", comment);
         return commentRepository
                 .findById(comment.getId())
                 .map(existingComment -> {
@@ -117,7 +117,7 @@ public class CommentService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Comment> findAll(Pageable pageable) {
+    public Page<NkComment> findAll(Pageable pageable) {
         log.debug("Request to get all Comments");
         return commentRepository.findAll(pageable);
     }
@@ -129,8 +129,8 @@ public class CommentService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Comment> findOne(Long id) {
-        log.debug("Request to get Comment : {}", id);
+    public Optional<NkComment> findOne(Long id) {
+        log.debug("Request to get NkComment : {}", id);
         return commentRepository.findById(id);
     }
 
@@ -140,7 +140,7 @@ public class CommentService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete Comment : {}", id);
+        log.debug("Request to delete NkComment : {}", id);
         commentRepository
                 .findById(id)
                 .map(deletingComment -> {

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import org.open.ngelmakproject.domain.Attachment;
-import org.open.ngelmakproject.domain.Post;
+import org.open.ngelmakproject.domain.NkArticle;
+import org.open.ngelmakproject.domain.NkAttachment;
 import org.open.ngelmakproject.repository.AttachmentRepository;
 import org.open.ngelmakproject.service.AttachmentService;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
- * REST controller for managing {@link org.open.ngelmakproject.domain.Attachment}.
+ * REST controller for managing {@link org.open.ngelmakproject.domain.NkAttachment}.
  */
 @RestController
 @RequestMapping("/api/attachments")
@@ -46,9 +46,9 @@ public class AttachmentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of attachments in body.
      */
     @GetMapping("/post/{id}")
-    public ResponseEntity<List<Attachment>> findByPost(@PathVariable("id") Long id) {
-        log.debug("REST request to get Attachments by Post {}", id);
-        return ResponseEntity.ok().body(attachmentRepository.findByPost(new Post().id(id)));
+    public ResponseEntity<List<NkAttachment>> findByArticle(@PathVariable("id") Long id) {
+        log.debug("REST request to get Attachments by NkArticle {}", id);
+        return ResponseEntity.ok().body(attachmentRepository.findByArticle(new NkArticle().id(id)));
     }
 
     /**
@@ -58,9 +58,9 @@ public class AttachmentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the attachment, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Attachment> getAttachment(@PathVariable("id") Long id) {
-        log.debug("REST request to get Attachment : {}", id);
-        Optional<Attachment> attachment = attachmentService.findOne(id);
+    public ResponseEntity<NkAttachment> getAttachment(@PathVariable("id") Long id) {
+        log.debug("REST request to get NkAttachment : {}", id);
+        Optional<NkAttachment> attachment = attachmentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(attachment);
     }
 
@@ -73,7 +73,7 @@ public class AttachmentResource {
      */
     @GetMapping("/{id}/resource")
     public ResponseEntity<byte[]> getAttachmentResource(@PathVariable("id") Long id) throws IOException {
-        log.debug("REST request to get Attachment : {}", id);
+        log.debug("REST request to get NkAttachment : {}", id);
         return ResponseUtil.wrapOrNotFound(attachmentService.getResource(id));
     }
 }

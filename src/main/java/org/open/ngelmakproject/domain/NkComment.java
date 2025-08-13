@@ -27,12 +27,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * A Comment.
+ * A NkComment.
  */
 @Entity
 @Table(name = "nk_comment")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Comment implements Serializable {
+public class NkComment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -65,11 +65,11 @@ public class Comment implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @NotNull
     @JsonIncludeProperties(value = { "id" })
-    private Post post;
+    private NkPost post;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JsonIncludeProperties(value = { "id" })
-    private Comment replayto;
+    private NkComment replayto;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @NotNull
@@ -81,27 +81,27 @@ public class Comment implements Serializable {
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "commentRelated")
     @JsonIgnore
-    private Set<Ticket> reports = new HashSet<>();
+    private Set<NkTicket> reports = new HashSet<>();
 
     /**
      * a comment can have multiple subcomments (reply), each issued by one user.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "replayto")
     @JsonIgnore
-    private Set<Comment> comments = new HashSet<>();
+    private Set<NkComment> comments = new HashSet<>();
 
-    public Comment() {
+    public NkComment() {
     }
 
-    public Comment(Long id,
+    public NkComment(Long id,
             Opinion opinion,
             Instant at,
             Instant lastUpdate,
             Instant deletedAt,
             String content,
             String url,
-            Post post,
-            Comment replayto,
+            NkPost post,
+            NkComment replayto,
             NkAccount account) {
         this.id = id;
         this.opinion = opinion;
@@ -119,7 +119,7 @@ public class Comment implements Serializable {
         return this.id;
     }
 
-    public Comment id(Long id) {
+    public NkComment id(Long id) {
         this.setId(id);
         return this;
     }
@@ -132,7 +132,7 @@ public class Comment implements Serializable {
         return this.opinion;
     }
 
-    public Comment opinion(Opinion opinion) {
+    public NkComment opinion(Opinion opinion) {
         this.setOpinion(opinion);
         return this;
     }
@@ -145,7 +145,7 @@ public class Comment implements Serializable {
         return this.at;
     }
 
-    public Comment at(Instant at) {
+    public NkComment at(Instant at) {
         this.setAt(at);
         return this;
     }
@@ -158,7 +158,7 @@ public class Comment implements Serializable {
         return this.lastUpdate;
     }
 
-    public Comment lastUpdate(Instant lastUpdate) {
+    public NkComment lastUpdate(Instant lastUpdate) {
         this.setLastUpdate(lastUpdate);
         return this;
     }
@@ -171,7 +171,7 @@ public class Comment implements Serializable {
         return this.deletedAt;
     }
 
-    public Comment deletedAt(Instant deletedAt) {
+    public NkComment deletedAt(Instant deletedAt) {
         this.setDeleteAt(deletedAt);
         return this;
     }
@@ -184,7 +184,7 @@ public class Comment implements Serializable {
         return this.content;
     }
 
-    public Comment content(String content) {
+    public NkComment content(String content) {
         this.setContent(content);
         return this;
     }
@@ -201,7 +201,7 @@ public class Comment implements Serializable {
         return this.url;
     }
 
-    public Comment url(String url) {
+    public NkComment url(String url) {
         this.setUrl(url);
         return this;
     }
@@ -210,11 +210,11 @@ public class Comment implements Serializable {
         this.url = url;
     }
 
-    public Set<Ticket> getReports() {
+    public Set<NkTicket> getReports() {
         return this.reports;
     }
 
-    public void setReports(Set<Ticket> tickets) {
+    public void setReports(Set<NkTicket> tickets) {
         if (this.reports != null) {
             this.reports.forEach(i -> i.setCommentRelated(null));
         }
@@ -224,28 +224,28 @@ public class Comment implements Serializable {
         this.reports = tickets;
     }
 
-    public Comment reports(Set<Ticket> tickets) {
+    public NkComment reports(Set<NkTicket> tickets) {
         this.setReports(tickets);
         return this;
     }
 
-    public Comment addReports(Ticket ticket) {
+    public NkComment addReports(NkTicket ticket) {
         this.reports.add(ticket);
         ticket.setCommentRelated(this);
         return this;
     }
 
-    public Comment removeReports(Ticket ticket) {
+    public NkComment removeReports(NkTicket ticket) {
         this.reports.remove(ticket);
         ticket.setCommentRelated(null);
         return this;
     }
 
-    public Set<Comment> getComments() {
+    public Set<NkComment> getComments() {
         return this.comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(Set<NkComment> comments) {
         if (this.comments != null) {
             this.comments.forEach(i -> i.setReplayto(null));
         }
@@ -255,45 +255,45 @@ public class Comment implements Serializable {
         this.comments = comments;
     }
 
-    public Comment comments(Set<Comment> comments) {
+    public NkComment comments(Set<NkComment> comments) {
         this.setComments(comments);
         return this;
     }
 
-    public Comment addComment(Comment comment) {
+    public NkComment addComment(NkComment comment) {
         this.comments.add(comment);
         comment.setReplayto(this);
         return this;
     }
 
-    public Comment removeComment(Comment comment) {
+    public NkComment removeComment(NkComment comment) {
         this.comments.remove(comment);
         comment.setReplayto(null);
         return this;
     }
 
-    public Post getPost() {
+    public NkPost getPost() {
         return this.post;
     }
 
-    public void setPost(Post post) {
+    public void setPost(NkPost post) {
         this.post = post;
     }
 
-    public Comment post(Post post) {
+    public NkComment post(NkPost post) {
         this.setPost(post);
         return this;
     }
 
-    public Comment getReplayto() {
+    public NkComment getReplayto() {
         return this.replayto;
     }
 
-    public void setReplayto(Comment comment) {
+    public void setReplayto(NkComment comment) {
         this.replayto = comment;
     }
 
-    public Comment replayto(Comment comment) {
+    public NkComment replayto(NkComment comment) {
         this.setReplayto(comment);
         return this;
     }
@@ -306,7 +306,7 @@ public class Comment implements Serializable {
         this.account = nkAccount;
     }
 
-    public Comment account(NkAccount nkAccount) {
+    public NkComment account(NkAccount nkAccount) {
         this.setAccount(nkAccount);
         return this;
     }
@@ -316,10 +316,10 @@ public class Comment implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Comment)) {
+        if (!(o instanceof NkComment)) {
             return false;
         }
-        return getId() != null && getId().equals(((Comment) o).getId());
+        return getId() != null && getId().equals(((NkComment) o).getId());
     }
 
     @Override
@@ -330,7 +330,7 @@ public class Comment implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Comment{" +
+        return "NkComment{" +
                 "id=" + getId() +
                 ", opinion='" + getOpinion() + "'" +
                 ", at='" + getAt() + "'" +

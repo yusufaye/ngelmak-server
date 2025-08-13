@@ -16,12 +16,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * A Membership.
+ * A NkMembership.
  */
 @Entity
 @Table(name = "nk_membership")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Membership implements Serializable {
+public class NkMembership implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -53,7 +53,7 @@ public class Membership implements Serializable {
         return this.id;
     }
 
-    public Membership id(Long id) {
+    public NkMembership id(Long id) {
         this.setId(id);
         return this;
     }
@@ -66,7 +66,7 @@ public class Membership implements Serializable {
         return this.at;
     }
 
-    public Membership at(Instant at) {
+    public NkMembership at(Instant at) {
         this.setAt(at);
         return this;
     }
@@ -79,7 +79,7 @@ public class Membership implements Serializable {
         return this.activateNotification;
     }
 
-    public Membership activateNotification(Boolean activateNotification) {
+    public NkMembership activateNotification(Boolean activateNotification) {
         this.setActivateNotification(activateNotification);
         return this;
     }
@@ -96,7 +96,7 @@ public class Membership implements Serializable {
         this.follower = nkAccount;
     }
 
-    public Membership follower(NkAccount nkAccount) {
+    public NkMembership follower(NkAccount nkAccount) {
         this.setFollower(nkAccount);
         return this;
     }
@@ -109,7 +109,7 @@ public class Membership implements Serializable {
         this.following = nkAccount;
     }
 
-    public Membership following(NkAccount nkAccount) {
+    public NkMembership following(NkAccount nkAccount) {
         this.setFollowing(nkAccount);
         return this;
     }
@@ -119,10 +119,10 @@ public class Membership implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Membership)) {
+        if (!(o instanceof NkMembership)) {
             return false;
         }
-        return getId() != null && getId().equals(((Membership) o).getId());
+        return getId() != null && getId().equals(((NkMembership) o).getId());
     }
 
     @Override
@@ -133,7 +133,7 @@ public class Membership implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Membership{" +
+        return "NkMembership{" +
                 "id=" + getId() +
                 ", at='" + getAt() + "'" +
                 ", activateNotification='" + getActivateNotification() + "'" +

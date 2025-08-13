@@ -24,7 +24,7 @@ import jakarta.validation.constraints.Size;
 @Table(name = "nk_privilege")
 @JsonIgnoreProperties(value = { "new", "id" })
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Privilege implements Serializable, Persistable<String> {
+public class NkPrivilege implements Serializable, Persistable<String> {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class Privilege implements Serializable, Persistable<String> {
         return this.name;
     }
 
-    public Privilege name(String name) {
+    public NkPrivilege name(String name) {
         this.setName(name);
         return this;
     }
@@ -67,7 +67,7 @@ public class Privilege implements Serializable, Persistable<String> {
         return !this.isPersisted;
     }
 
-    public Privilege setIsPersisted() {
+    public NkPrivilege setIsPersisted() {
         this.isPersisted = true;
         return this;
     }
@@ -77,10 +77,10 @@ public class Privilege implements Serializable, Persistable<String> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Privilege)) {
+        if (!(o instanceof NkPrivilege)) {
             return false;
         }
-        return getName() != null && getName().equals(((Privilege) o).getName());
+        return getName() != null && getName().equals(((NkPrivilege) o).getName());
     }
 
     @Override
