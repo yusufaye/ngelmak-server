@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.annotations.BatchSize;
 import org.open.ngelmakproject.domain.enumeration.Status;
 import org.open.ngelmakproject.domain.enumeration.Visibility;
 

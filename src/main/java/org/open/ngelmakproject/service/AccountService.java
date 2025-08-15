@@ -4,9 +4,9 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 
-import org.open.ngelmakproject.domain.Config;
-import org.open.ngelmakproject.domain.NkMembership;
 import org.open.ngelmakproject.domain.NkAccount;
+import org.open.ngelmakproject.domain.NkConfig;
+import org.open.ngelmakproject.domain.NkMembership;
 import org.open.ngelmakproject.domain.User;
 import org.open.ngelmakproject.domain.enumeration.Accessibility;
 import org.open.ngelmakproject.domain.enumeration.Visibility;
@@ -71,7 +71,7 @@ public class AccountService {
                 .name(nkAccountDTO.getName())
                 .visibility(nkAccountDTO.getVisibility())
                 .user(currentUser);
-        Config defaultConfig = new Config();
+        NkConfig defaultConfig = new NkConfig();
         defaultConfig.lastUpdate(Instant.now());
         defaultConfig.defaultAccessibility(Accessibility.DEFAULT);
         defaultConfig.defaultVisibility(Visibility.PRIVATE);

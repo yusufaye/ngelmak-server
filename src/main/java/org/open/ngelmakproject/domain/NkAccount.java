@@ -79,7 +79,7 @@ public class NkAccount implements Serializable {
      */
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(unique = true)
-    private Config configuration;
+    private NkConfig configuration;
 
     @OneToOne
     @JoinColumn(unique = true)
@@ -231,15 +231,15 @@ public class NkAccount implements Serializable {
         this.at = at;
     }
 
-    public Config getConfiguration() {
+    public NkConfig getConfiguration() {
         return this.configuration;
     }
 
-    public void setConfiguration(Config config) {
+    public void setConfiguration(NkConfig config) {
         this.configuration = config;
     }
 
-    public NkAccount configuration(Config config) {
+    public NkAccount configuration(NkConfig config) {
         this.setConfiguration(config);
         return this;
     }

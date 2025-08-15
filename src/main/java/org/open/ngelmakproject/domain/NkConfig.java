@@ -20,12 +20,12 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 /**
- * A Config.
+ * A NkConfig.
  */
 @Entity
 @Table(name = "nk_config")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Config implements Serializable {
+public class NkConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,7 @@ public class Config implements Serializable {
         return this.id;
     }
 
-    public Config id(Long id) {
+    public NkConfig id(Long id) {
         this.setId(id);
         return this;
     }
@@ -67,7 +67,7 @@ public class Config implements Serializable {
         return this.lastUpdate;
     }
 
-    public Config lastUpdate(Instant lastUpdate) {
+    public NkConfig lastUpdate(Instant lastUpdate) {
         this.setLastUpdate(lastUpdate);
         return this;
     }
@@ -80,7 +80,7 @@ public class Config implements Serializable {
         return this.defaultAccessibility;
     }
 
-    public Config defaultAccessibility(Accessibility defaultAccessibility) {
+    public NkConfig defaultAccessibility(Accessibility defaultAccessibility) {
         this.setDefaultAccessibility(defaultAccessibility);
         return this;
     }
@@ -93,7 +93,7 @@ public class Config implements Serializable {
         return this.defaultVisibility;
     }
 
-    public Config defaultVisibility(Visibility defaultVisibility) {
+    public NkConfig defaultVisibility(Visibility defaultVisibility) {
         this.setDefaultVisibility(defaultVisibility);
         return this;
     }
@@ -116,7 +116,7 @@ public class Config implements Serializable {
         this.nkAccount = nkAccount;
     }
 
-    public Config nkAccount(NkAccount nkAccount) {
+    public NkConfig nkAccount(NkAccount nkAccount) {
         this.setNkAccount(nkAccount);
         return this;
     }
@@ -129,10 +129,10 @@ public class Config implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Config)) {
+        if (!(o instanceof NkConfig)) {
             return false;
         }
-        return getId() != null && getId().equals(((Config) o).getId());
+        return getId() != null && getId().equals(((NkConfig) o).getId());
     }
 
     @Override
@@ -145,7 +145,7 @@ public class Config implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Config{" +
+        return "NkConfig{" +
                 "id=" + getId() +
                 ", lastUpdate='" + getLastUpdate() + "'" +
                 ", defaultAccessibility='" + getDefaultAccessibility() + "'" +
