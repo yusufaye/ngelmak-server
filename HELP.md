@@ -66,6 +66,12 @@ mvn --version
 
 # DATABASE (POSGRESQL)
 
+DROP DATABASE IF EXISTS ngelmak_auth_db;
+
+CREATE DATABASE ngelmak_auth_db OWNER ngelmak;
+
+\c ngelmak_auth_db
+
 ## Install PostgreSQL Linux (Ubuntu)
 
 For downloading postgreSQL please follow the link [here](https://www.postgresql.org/download/linux/ubuntu/).
